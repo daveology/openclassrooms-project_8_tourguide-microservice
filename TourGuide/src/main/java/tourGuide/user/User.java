@@ -8,7 +8,10 @@ import java.util.UUID;
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
 
+/** Represents the user.
+ */
 public class User {
+
 	private final UUID userId;
 	private final String userName;
 	private String phoneNumber;
@@ -18,24 +21,20 @@ public class User {
 	private List<UserReward> userRewards = new ArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
+
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
+
 		this.userId = userId;
 		this.userName = userName;
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = emailAddress;
 	}
 	
-	public UUID getUserId() {
-		return userId;
-	}
+	public UUID getUserId() { return userId; }
 	
-	public String getUserName() {
-		return userName;
-	}
+	public String getUserName() { return userName; }
 	
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+	public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 	
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -50,6 +49,7 @@ public class User {
 	}
 	
 	public void setLatestLocationTimestamp(Date latestLocationTimestamp) {
+
 		this.latestLocationTimestamp = latestLocationTimestamp;
 	}
 	
@@ -70,6 +70,7 @@ public class User {
 	}
 	
 	public void addUserReward(UserReward userReward) {
+
 		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
 			userRewards.add(userReward);
 		}
@@ -98,5 +99,4 @@ public class User {
 	public List<Provider> getTripDeals() {
 		return tripDeals;
 	}
-
 }

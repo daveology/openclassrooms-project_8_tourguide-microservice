@@ -14,20 +14,32 @@ import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
 
+/** Responsible for processing tourguide and reward services.
+ */
 @RestController
 public class TourGuideController {
 
 	@Autowired
 	TourGuideService tourGuideService;
-	
+
+    /** Homepage's endpoint.
+     * @return Return to the homepage
+     */
     @RequestMapping("/")
     public String index() {
+
         return "Greetings from TourGuide!";
     }
-    
+
+    /** User's location endpoint.
+     * @param userName String containing the username.
+     * @return Return the user actual location.
+     */
     @RequestMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) {
+
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+
 		return JsonStream.serialize(visitedLocation.location);
     }
     
@@ -39,20 +51,35 @@ public class TourGuideController {
         // The user's location lat/long, 
         // The distance in miles between the user's location and each of the attractions.
         // The reward points for visiting each Attraction.
-        //    Note: Attraction reward points can be gathered from RewardsCentral
+    // Note: Attraction reward points can be gathered from RewardsCentral
+    /** User's closest attraction endpoint.
+     * @param userName String containing the username.
+     * @return Return the closest attraction to the user.
+     */
     @RequestMapping("/getNearbyAttractions") 
     public String getNearbyAttractions(@RequestParam String userName) {
+
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+
     	return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
     }
-    
+
+    /** User's rewards endpoint.
+     * @param userName String containing the username.
+     * @return Return the user's rewards.
+     */
     @RequestMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
+
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
-    
+
+    /** User's recent locations endpoint.
+     * @return Return the user's recent locations.
+     */
     @RequestMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
+
     	// TODO: Get a list of every user's most recent location as JSON
     	//- Note: does not use gpsUtil to query for their current location, 
     	//        but rather gathers the user's current location from their stored location history.
@@ -65,16 +92,25 @@ public class TourGuideController {
     	
     	return JsonStream.serialize("");
     }
-    
+
+    /** User's trip deals endpoint.
+     * @param userName String containing the username.
+     * @return Return the user's trip deals.
+     */
     @RequestMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
+
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+
     	return JsonStream.serialize(providers);
     }
-    
+
+    /** User's endpoint.
+     * @param userName String containing the username.
+     * @return Return the user.
+     */
     private User getUser(String userName) {
+
     	return tourGuideService.getUser(userName);
     }
-   
-
 }
