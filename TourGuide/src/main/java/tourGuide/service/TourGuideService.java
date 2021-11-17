@@ -20,7 +20,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourGuide.helper.InternalTestHelper;
+import tourGuide.config.InternalTestHelper;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
