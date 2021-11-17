@@ -1,4 +1,4 @@
-package tourGuide.tracker;
+package tourGuide.model;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tourGuide.service.TourGuideService;
-import tourGuide.model.User;
 
 public class Tracker extends Thread {
 
