@@ -20,10 +20,10 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import tourGuide.helper.InternalTestHelper;
-import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.config.InternalTestHelper;
+import tourGuide.model.Tracker;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -58,7 +58,7 @@ public class TourGuideService {
 
 	/** User's rewards.
 	 * @param user User object.
-	 * @return Return the user's rewards.
+	 * @return Return the model's rewards.
 	 */
 	public List<UserReward> getUserRewards(User user) {
 
@@ -67,7 +67,7 @@ public class TourGuideService {
 
 	/** User's location.
 	 * @param user User object.
-	 * @return Return the user's location.
+	 * @return Return the model's location.
 	 */
 	public VisitedLocation getUserLocation(User user) {
 
@@ -80,7 +80,7 @@ public class TourGuideService {
 
 	/** User.
 	 * @param userName String containing the username.
-	 * @return Return the user.
+	 * @return Return the model.
 	 */
 	public User getUser(String userName) {
 
@@ -107,7 +107,7 @@ public class TourGuideService {
 
 	/** User's trip deals.
 	 * @param user User object.
-	 * @return Return user's trip deals.
+	 * @return Return model's trip deals.
 	 */
 	public List<Provider> getTripDeals(User user) {
 
@@ -121,7 +121,7 @@ public class TourGuideService {
 
 	/** User's location.
 	 * @param user User object.
-	 * @return Return user's location.
+	 * @return Return model's location.
 	 */
 	public VisitedLocation trackUserLocation(User user) {
 
@@ -132,9 +132,9 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
-	/** User's closest attraction.
+	/** User's closest attractions.
 	 * @param visitedLocation VisitedLocation object.
-	 * @return Return the closest attraction to the user.
+	 * @return Return the closest attraction to the model.
 	 */
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 

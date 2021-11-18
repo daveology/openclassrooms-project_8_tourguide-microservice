@@ -9,11 +9,14 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 
+/** Provides the rewards functionalities.
+ */
 @Service
 public class RewardsService {
+
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
 	// proximity in miles
@@ -24,6 +27,7 @@ public class RewardsService {
 	private final RewardCentral rewardsCentral;
 	
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
+
 		this.gpsUtil = gpsUtil;
 		this.rewardsCentral = rewardCentral;
 	}
@@ -35,8 +39,12 @@ public class RewardsService {
 	public void setDefaultProximityBuffer() {
 		proximityBuffer = defaultProximityBuffer;
 	}
-	
+
+	/** Add the user a reward if an attraction is visited.
+	 * @param user User object.
+	 */
 	public void calculateRewards(User user) {
+
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
 		
@@ -50,20 +58,39 @@ public class RewardsService {
 			}
 		}
 	}
-	
+
+	/** Tell if the an attraction is close.
+	 * @param attraction Attraction object
+	 * @param location User's location
+	 * @return Return boolean for confirmation.
+	 */
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
-	
+
+	/** Tell if the user is enough close to the attraction to be visited.
+	 * @param visitedLocation User's location
+	 * @param attraction Attraction object
+	 * @return Return boolean for confirmation.
+	 */
 	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
 	private int getRewardPoints(Attraction attraction, User user) {
+
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
-	
+
+	/** Calculate the distance in miles.
+	 * @param loc1 User's location
+	 * @param loc2 Attraction's location
+	 * @return Return the distance between the two location.
+	 */
 	public double getDistance(Location loc1, Location loc2) {
+
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
         double lat2 = Math.toRadians(loc2.latitude);
@@ -76,5 +103,4 @@ public class RewardsService {
         double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
         return statuteMiles;
 	}
-
 }
