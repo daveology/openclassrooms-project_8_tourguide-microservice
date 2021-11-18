@@ -132,7 +132,7 @@ public class TourGuideService {
 		return visitedLocation;
 	}
 
-	/** User's closest attraction.
+	/** User's closest attractions.
 	 * @param visitedLocation VisitedLocation object.
 	 * @return Return the closest attraction to the model.
 	 */
