@@ -12,8 +12,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -32,7 +32,7 @@ import tripPricer.TripPricer;
 @Service
 public class TourGuideService {
 
-	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
+	private Logger logger = LogManager.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
