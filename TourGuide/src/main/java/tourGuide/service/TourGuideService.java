@@ -141,7 +141,11 @@ public class TourGuideService {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
+				if (nearbyAttractions.size() == 5) {
+					return nearbyAttractions;
+				}  else {
+					nearbyAttractions.add(attraction);
+				}
 			}
 		}
 		
