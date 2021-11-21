@@ -44,13 +44,13 @@ public class TourGuideController {
     }
     
     //  TODO: Change this method to no longer return a List of Attractions.
- 	//  Instead: Get the closest five tourist attractions to the model - no matter how far away they are.
- 	//  Return a new JSON object that contains:
-    	// Name of Tourist attraction, 
-        // Tourist attractions lat/long, 
-        // The model's location lat/long,
-        // The distance in miles between the model's location and each of the attractions.
-        // The reward points for visiting each Attraction.
+ 	// [x] Instead: Get the closest five tourist attractions to the model - no matter how far away they are.
+ 	// [x] Return a new JSON object that contains:
+    	// [x] Name of Tourist attraction,
+        // [x] Tourist attractions lat/long,
+        // [] The model's location lat/long,
+        // [] The distance in miles between the model's location and each of the attractions.
+        // [] The reward points for visiting each Attraction.
     // Note: Attraction reward points can be gathered from RewardsCentral
     /** User's closest attraction endpoint.
      * @param userName String containing the username.
