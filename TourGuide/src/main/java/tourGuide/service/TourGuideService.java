@@ -141,6 +141,7 @@ public class TourGuideService {
 	 */
 	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
 
+		User user = getUserById(internalUserMap, visitedLocation.userId);
 		List<NearAttraction> nearbyAttractions = new ArrayList<>();
 		NearAttraction nearAttraction = new NearAttraction();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
@@ -156,7 +157,7 @@ public class TourGuideService {
 					nearAttraction.setMilesDistance(rewardsService.getDistance(visitedLocation.location,
 							new Location(nearAttraction.getAttractionLatitude(),
 									nearAttraction.getAttractionLongitude())));
-					nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, ));
+					nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, user));
 					nearbyAttractions.add(nearAttraction);
 				}
 			}
