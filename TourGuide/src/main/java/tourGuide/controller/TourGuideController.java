@@ -48,9 +48,9 @@ public class TourGuideController {
  	// [x] Return a new JSON object that contains:
     	// [x] Name of Tourist attraction,
         // [x] Tourist attractions lat/long,
-        // [] The model's location lat/long,
-        // [] The distance in miles between the model's location and each of the attractions.
-        // [] The reward points for visiting each Attraction.
+        // [x] The model's location lat/long,
+        // [x] The distance in miles between the model's location and each of the attractions.
+        // [x] The reward points for visiting each Attraction.
     // Note: Attraction reward points can be gathered from RewardsCentral
     /** User's closest attraction endpoint.
      * @param userName String containing the username.
