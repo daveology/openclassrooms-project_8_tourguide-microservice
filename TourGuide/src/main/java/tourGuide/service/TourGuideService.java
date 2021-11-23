@@ -21,6 +21,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
+import tourGuide.model.NearAttraction;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -136,15 +137,25 @@ public class TourGuideService {
 	 * @param visitedLocation VisitedLocation object.
 	 * @return Return the closest attraction to the model.
 	 */
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
 
-		List<Attraction> nearbyAttractions = new ArrayList<>();
+		List<NearAttraction> nearbyAttractions = new ArrayList<>();
+		NearAttraction nearAttraction = new NearAttraction();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
 				if (nearbyAttractions.size() == 5) {
 					return nearbyAttractions;
 				}  else {
-					nearbyAttractions.add(attraction);
+					nearAttraction.setAttractionName(attraction.attractionName);
+					nearAttraction.setAttractionLatitude(attraction.latitude);
+					nearAttraction.setAttractionLongitude(attraction.longitude);
+					nearAttraction.setAttractionLatitude(visitedLocation.location.latitude);
+					nearAttraction.setAttractionLongitude(visitedLocation.location.longitude);
+					nearAttraction.setMilesDistance(rewardsService.getDistance(visitedLocation.location,
+							new Location(nearAttraction.getAttractionLatitude(),
+									nearAttraction.getAttractionLongitude())));
+					nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, ));
+					nearbyAttractions.add(nearAttraction);
 				}
 			}
 		}
