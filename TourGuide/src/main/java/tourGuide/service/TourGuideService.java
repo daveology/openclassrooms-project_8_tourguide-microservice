@@ -162,6 +162,25 @@ public class TourGuideService {
 			}
 		}
 
+		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		Random random = new Random();
+		if (nearbyAttractions.size() < 5) {
+			while(nearbyAttractions.size() < 5) {
+				Attraction attraction = attractionsList.get(random.nextInt(attractionsList.size()));
+				nearAttraction = new NearAttraction();
+				nearAttraction.setAttractionName(attraction.attractionName);
+				nearAttraction.setAttractionLatitude(attraction.latitude);
+				nearAttraction.setAttractionLongitude(attraction.longitude);
+				nearAttraction.setAttractionLatitude(visitedLocation.location.latitude);
+				nearAttraction.setAttractionLongitude(visitedLocation.location.longitude);
+				nearAttraction.setMilesDistance(rewardsService.getDistance(visitedLocation.location,
+						new Location(nearAttraction.getAttractionLatitude(),
+								nearAttraction.getAttractionLongitude())));
+				nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, user));
+				nearbyAttractions.add(nearAttraction);
+			}
+		}
+
 		return nearbyAttractions;
 	}
 
