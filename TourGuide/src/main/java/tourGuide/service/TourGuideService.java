@@ -140,10 +140,11 @@ public class TourGuideService {
 	 */
 	public List<NearAttractionDto> getNearByAttractions(VisitedLocation visitedLocation) {
 
+		List<Attraction> attractions = gpsUtil.getAttractions();
 		User user = getUserById(visitedLocation.userId);
 		List<NearAttractionDto> nearbyAttractions = new ArrayList<>();
 		NearAttractionDto nearAttraction = new NearAttractionDto();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
+		for(Attraction attraction : attractions) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
 				if (nearbyAttractions.size() == 5) {
 					return nearbyAttractions;
@@ -162,11 +163,10 @@ public class TourGuideService {
 			}
 		}
 
-		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		Random random = new Random();
 		if (nearbyAttractions.size() < 5) {
 			while(nearbyAttractions.size() < 5) {
-				Attraction attraction = attractionsList.get(random.nextInt(attractionsList.size()));
+				Attraction attraction = attractions.get(random.nextInt(attractions.size()));
 				nearAttraction = new NearAttractionDto();
 				nearAttraction.setAttractionName(attraction.attractionName);
 				nearAttraction.setAttractionLatitude(attraction.latitude);
