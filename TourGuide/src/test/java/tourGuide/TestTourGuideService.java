@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Ignore;
@@ -99,8 +100,9 @@ public class TestTourGuideService {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
-		User user = new User(UUID.randomUUID(), "internalUser99", "000", "internalUser99@tourGuide.com");
+		Random rand = new Random();
+
+		User user = tourGuideService.getUser("internalUser" + rand.nextInt(100));
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
 		List<NearAttraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
