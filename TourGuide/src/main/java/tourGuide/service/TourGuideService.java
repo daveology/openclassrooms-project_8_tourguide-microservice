@@ -82,12 +82,11 @@ public class TourGuideService {
 		return internalUserMap.get(userName);
 	}
 
-	public User getUserById(Map<String, User> map, UUID id) {
+	public User getUserById(UUID id) {
 
-		return map.entrySet()
-				.stream()
-				.filter(entry -> Objects.equals(entry.getValue().getUserId(), id))
-				.findAny().get().getValue();
+		return internalUserMap.values().stream()
+				.filter(entry -> Objects.equals(entry.getUserId(), id))
+				.findAny().get();
 	}
 
 	/** Users.
@@ -141,7 +140,7 @@ public class TourGuideService {
 	 */
 	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
 
-		User user = getUserById(internalUserMap, visitedLocation.userId);
+		User user = getUserById(visitedLocation.userId);
 		List<NearAttraction> nearbyAttractions = new ArrayList<>();
 		NearAttraction nearAttraction = new NearAttraction();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
