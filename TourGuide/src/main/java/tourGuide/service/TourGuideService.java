@@ -85,8 +85,8 @@ public class TourGuideService {
 	public User getUserById(UUID id) {
 
 		return internalUserMap.values().stream()
-				.filter(entry -> Objects.equals(entry.getUserId(), id))
-				.findAny().get();
+				.filter(entry -> entry.getUserId().equals(id))
+				.findFirst().get();
 	}
 
 	/** Users.
@@ -188,7 +188,7 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+		IntStream.range(0, 100).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
