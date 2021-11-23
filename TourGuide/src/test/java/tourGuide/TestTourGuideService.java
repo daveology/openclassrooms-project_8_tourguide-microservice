@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
-import tourGuide.model.NearAttraction;
+import tourGuide.dto.NearAttractionDto;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
@@ -105,7 +103,7 @@ public class TestTourGuideService {
 		User user = tourGuideService.getUser("internalUser" + rand.nextInt(100));
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
-		List<NearAttraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
 		tourGuideService.tracker.stopTracking();
 		

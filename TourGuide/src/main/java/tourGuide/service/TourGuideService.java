@@ -15,7 +15,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
-import tourGuide.model.NearAttraction;
+import tourGuide.dto.NearAttractionDto;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -138,11 +138,11 @@ public class TourGuideService {
 	 * @param visitedLocation VisitedLocation object.
 	 * @return Return the closest attraction to the model.
 	 */
-	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<NearAttractionDto> getNearByAttractions(VisitedLocation visitedLocation) {
 
 		User user = getUserById(visitedLocation.userId);
-		List<NearAttraction> nearbyAttractions = new ArrayList<>();
-		NearAttraction nearAttraction = new NearAttraction();
+		List<NearAttractionDto> nearbyAttractions = new ArrayList<>();
+		NearAttractionDto nearAttraction = new NearAttractionDto();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
 				if (nearbyAttractions.size() == 5) {
@@ -167,7 +167,7 @@ public class TourGuideService {
 		if (nearbyAttractions.size() < 5) {
 			while(nearbyAttractions.size() < 5) {
 				Attraction attraction = attractionsList.get(random.nextInt(attractionsList.size()));
-				nearAttraction = new NearAttraction();
+				nearAttraction = new NearAttractionDto();
 				nearAttraction.setAttractionName(attraction.attractionName);
 				nearAttraction.setAttractionLatitude(attraction.latitude);
 				nearAttraction.setAttractionLongitude(attraction.longitude);
