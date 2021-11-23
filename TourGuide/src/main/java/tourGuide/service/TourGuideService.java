@@ -2,13 +2,7 @@ package tourGuide.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,6 +15,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
+import tourGuide.model.NearAttraction;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -87,6 +82,13 @@ public class TourGuideService {
 		return internalUserMap.get(userName);
 	}
 
+	public User getUserById(UUID id) {
+
+		return internalUserMap.values().stream()
+				.filter(entry -> entry.getUserId().equals(id))
+				.findFirst().get();
+	}
+
 	/** Users.
 	 * @return Return the users list.
 	 */
@@ -136,15 +138,49 @@ public class TourGuideService {
 	 * @param visitedLocation VisitedLocation object.
 	 * @return Return the closest attraction to the model.
 	 */
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
 
-		List<Attraction> nearbyAttractions = new ArrayList<>();
+		User user = getUserById(visitedLocation.userId);
+		List<NearAttraction> nearbyAttractions = new ArrayList<>();
+		NearAttraction nearAttraction = new NearAttraction();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
+				if (nearbyAttractions.size() == 5) {
+					return nearbyAttractions;
+				}  else {
+					nearAttraction.setAttractionName(attraction.attractionName);
+					nearAttraction.setAttractionLatitude(attraction.latitude);
+					nearAttraction.setAttractionLongitude(attraction.longitude);
+					nearAttraction.setAttractionLatitude(visitedLocation.location.latitude);
+					nearAttraction.setAttractionLongitude(visitedLocation.location.longitude);
+					nearAttraction.setMilesDistance(rewardsService.getDistance(visitedLocation.location,
+							new Location(nearAttraction.getAttractionLatitude(),
+									nearAttraction.getAttractionLongitude())));
+					nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, user));
+					nearbyAttractions.add(nearAttraction);
+				}
 			}
 		}
-		
+
+		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		Random random = new Random();
+		if (nearbyAttractions.size() < 5) {
+			while(nearbyAttractions.size() < 5) {
+				Attraction attraction = attractionsList.get(random.nextInt(attractionsList.size()));
+				nearAttraction = new NearAttraction();
+				nearAttraction.setAttractionName(attraction.attractionName);
+				nearAttraction.setAttractionLatitude(attraction.latitude);
+				nearAttraction.setAttractionLongitude(attraction.longitude);
+				nearAttraction.setAttractionLatitude(visitedLocation.location.latitude);
+				nearAttraction.setAttractionLongitude(visitedLocation.location.longitude);
+				nearAttraction.setMilesDistance(rewardsService.getDistance(visitedLocation.location,
+						new Location(nearAttraction.getAttractionLatitude(),
+								nearAttraction.getAttractionLongitude())));
+				nearAttraction.setRewardPoints(rewardsService.getRewardPoints(attraction, user));
+				nearbyAttractions.add(nearAttraction);
+			}
+		}
+
 		return nearbyAttractions;
 	}
 
@@ -171,11 +207,12 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+		IntStream.range(0, 100).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
+			logger.debug("Create User: " + user.getUserName());
 			generateUserLocationHistory(user);
 			
 			internalUserMap.put(userName, user);
