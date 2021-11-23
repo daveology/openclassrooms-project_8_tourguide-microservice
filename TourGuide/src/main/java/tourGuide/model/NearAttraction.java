@@ -1,5 +1,7 @@
 package tourGuide.model;
 
+/** Represents a near attraction.
+ */
 public class NearAttraction {
 
     public String attractionName;
