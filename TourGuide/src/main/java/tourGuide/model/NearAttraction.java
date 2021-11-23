@@ -68,6 +68,8 @@ public class NearAttraction {
         this.rewardPoints = rewardPoints;
     }
 
+    public NearAttraction() { }
+
     public NearAttraction(String attractionName, double attractionLatitude, double attractionLongitude,
                           double userLatitude, double userLongitude, double milesDistance, int rewardPoints) {
         this.attractionName = attractionName;
