@@ -1,8 +1,7 @@
 package tourGuide.service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
@@ -197,7 +196,7 @@ public class TourGuideService {
 
 			u.getVisitedLocations().stream().forEach(v -> {
 				//logger.debug("Test: " + LocalDateTime.now().toInstant(ZoneOffset.UTC) + " " + v.timeVisited.toInstant());
-				if (Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), v.timeVisited.toInstant()).toDays() < 7) {
+				if (LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS) < 7) {
 					locations.add(v.location);
 				}
 			});
