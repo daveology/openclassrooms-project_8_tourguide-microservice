@@ -188,13 +188,13 @@ public class TourGuideService {
 	public List<RecentLocationDto> getUsersRecentLocations(int withinDays) {
 
 		List<User> users = getAllUsers();
-		RecentLocationDto recentLocation = new RecentLocationDto();
+		List<RecentLocationDto> recentLocations = new ArrayList<>();
 
 		users.stream().forEach(u -> {
 
 		});
 
-		return recentLocation;
+		return recentLocations;
 	}
 
 	/** Shutting down the service.
