@@ -190,7 +190,9 @@ public class TourGuideService {
 		List<RecentLocationDto> recentLocations = new ArrayList<>();
 
 		internalUserMap.values().stream().forEach(u -> {
+			u.getVisitedLocations().stream().forEach(v -> {
 
+			});
 		});
 
 		return recentLocations;
