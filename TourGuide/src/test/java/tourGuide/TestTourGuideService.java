@@ -100,7 +100,7 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		Random rand = new Random();
 
-		User user = tourGuideService.getUser("internalUser" + rand.nextInt(100));
+		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
 		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(visitedLocation);
@@ -113,7 +113,11 @@ public class TestTourGuideService {
 	@Test
 	public void shouldGetAllRecentLocations() {
 
-
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		Random rand = new Random();
+		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
 	}
 	
 	public void getTripDeals() {
