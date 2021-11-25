@@ -127,6 +127,11 @@ public class TestTourGuideService {
 					Date.from(LocalDateTime.now().minusDays(new Random().nextInt(i)).toInstant(ZoneOffset.UTC))));
 		}
 		user.setVisitedLocations(locations);
+		int recentLocationCount = tourGuideService.getUsersRecentLocations(7).stream()
+				.filter(r -> r.getUserId().equals(user.getUserId()))
+				.findFirst().get().getLocation().size();
+
+		assertEquals(6, );
 	}
 	
 	public void getTripDeals() {
