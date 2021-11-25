@@ -185,7 +185,7 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 
-	public RecentLocationDto getUsersRecentLocations() {
+	public RecentLocationDto getUsersRecentLocations(int withinDays) {
 
 		RecentLocationDto recentLocation = new RecentLocationDto();
 
