@@ -109,6 +109,12 @@ public class TestTourGuideService {
 		
 		assertEquals(5, attractions.size());
 	}
+
+	@Test
+	public void shouldGetAllRecentLocations() {
+
+
+	}
 	
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -124,6 +130,4 @@ public class TestTourGuideService {
 		
 		assertEquals(10, providers.size());
 	}
-	
-	
 }
