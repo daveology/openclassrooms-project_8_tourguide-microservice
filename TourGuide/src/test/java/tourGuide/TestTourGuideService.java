@@ -123,7 +123,8 @@ public class TestTourGuideService {
 		user.setVisitedLocations(locations);
 
 		for (int i = 1 ; i >= 7 ; i++) {
-
+			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
+					Date.from(LocalDateTime.now().minusDays(new Random().nextInt(i)).toInstant(ZoneOffset.UTC))));
 		}
 	}
 	
