@@ -187,6 +187,8 @@ public class TourGuideService {
 
 	public RecentLocationDto getUsersRecentLocations(int withinDays) {
 
+		List<User> users = getAllUsers();
+
 		RecentLocationDto recentLocation = new RecentLocationDto();
 
 		return recentLocation;
