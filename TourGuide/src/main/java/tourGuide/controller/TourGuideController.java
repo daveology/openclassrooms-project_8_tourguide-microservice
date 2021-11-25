@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 import tripPricer.Provider;
@@ -84,7 +85,7 @@ public class TourGuideController {
     	//        ...
     	//     }
 
-        HashMap<UUID, Location> recentLocations = new HashMap<>();
+        RecentLocationDto recentLocations = tourGuideService.getUsersRecentLocations();
     	
     	return JsonStream.serialize(recentLocations);
     }
