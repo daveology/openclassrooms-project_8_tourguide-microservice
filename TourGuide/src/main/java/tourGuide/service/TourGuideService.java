@@ -1,7 +1,9 @@
 package tourGuide.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,6 +18,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -182,6 +185,27 @@ public class TourGuideService {
 		}
 
 		return nearbyAttractions;
+	}
+
+	public List<RecentLocationDto> getUsersRecentLocations(int withinDays) {
+
+		List<RecentLocationDto> recentLocations = new ArrayList<>();
+
+		internalUserMap.values().stream().forEach(u -> {
+			List<Location> locations = new ArrayList<>();
+
+			u.getVisitedLocations().stream().forEach(v -> {
+				//logger.debug("Test: " + LocalDateTime.now().toInstant(ZoneOffset.UTC) + " " + v.timeVisited.toInstant());
+				//logger.debug("Test: " + LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS) + " days");
+				if (Math.abs(LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS)) < withinDays) {
+					locations.add(v.location);
+				}
+			});
+
+			recentLocations.add(new RecentLocationDto(u.getUserId(), locations));
+		});
+
+		return recentLocations;
 	}
 
 	/** Shutting down the service.
