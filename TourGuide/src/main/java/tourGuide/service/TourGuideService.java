@@ -187,10 +187,9 @@ public class TourGuideService {
 
 	public List<RecentLocationDto> getUsersRecentLocations(int withinDays) {
 
-		List<User> users = getAllUsers();
 		List<RecentLocationDto> recentLocations = new ArrayList<>();
 
-		users.stream().forEach(u -> {
+		internalUserMap.values().stream().forEach(u -> {
 
 		});
 
