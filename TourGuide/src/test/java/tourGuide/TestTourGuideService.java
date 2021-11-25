@@ -122,7 +122,7 @@ public class TestTourGuideService {
 		List<VisitedLocation> locations = new ArrayList<>();
 		user.setVisitedLocations(new ArrayList<>());
 
-		for (int i = 1 ; i >= 7 ; i++) {
+		for (int i = 1 ; i <= 7 ; i++) {
 			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
 					Date.from(LocalDateTime.now().minusDays(new Random().nextInt(i)).toInstant(ZoneOffset.UTC))));
 		}
