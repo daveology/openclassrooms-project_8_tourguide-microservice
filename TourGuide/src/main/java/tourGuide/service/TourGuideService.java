@@ -196,7 +196,7 @@ public class TourGuideService {
 			List<Location> locations = new ArrayList<>();
 
 			u.getVisitedLocations().stream().forEach(v -> {
-				if (Duration.between(LocalDateTime.now(), (Temporal) v.timeVisited).toDays() >= 7) {
+				if (Duration.between(LocalDateTime.now(), LocalDateTime.from(v.timeVisited.toInstant())).toDays() >= 7) {
 					locations.add(v.location);
 				}
 			});
