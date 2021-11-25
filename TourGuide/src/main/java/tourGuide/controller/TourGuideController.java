@@ -85,7 +85,7 @@ public class TourGuideController {
     	//        ...
     	//     }
 
-        RecentLocationDto recentLocations = tourGuideService.getUsersRecentLocations(7);
+        List<RecentLocationDto> recentLocations = tourGuideService.getUsersRecentLocations(7);
     	
     	return JsonStream.serialize(recentLocations);
     }
