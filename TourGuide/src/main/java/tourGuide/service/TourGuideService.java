@@ -184,6 +184,11 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 
+	public HashMap<UUID, Location> getUsersRecentLocations() {
+
+		return ;
+	}
+
 	/** Shutting down the service.
 	 */
 	private void addShutDownHook() {
