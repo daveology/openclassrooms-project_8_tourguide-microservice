@@ -120,12 +120,13 @@ public class TestTourGuideService {
 		Random rand = new Random();
 		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
 		List<VisitedLocation> locations = new ArrayList<>();
-		user.setVisitedLocations(locations);
+		user.setVisitedLocations(new ArrayList<>());
 
 		for (int i = 1 ; i >= 7 ; i++) {
 			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
 					Date.from(LocalDateTime.now().minusDays(new Random().nextInt(i)).toInstant(ZoneOffset.UTC))));
 		}
+		user.setVisitedLocations(locations);
 	}
 	
 	public void getTripDeals() {
