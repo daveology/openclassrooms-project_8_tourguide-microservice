@@ -3,11 +3,11 @@ package tourGuide;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
 
+import gpsUtil.location.Location;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
@@ -119,9 +119,12 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		Random rand = new Random();
 		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
-		user.setVisitedLocations(new ArrayList<>());
+		List<VisitedLocation> locations = new ArrayList<>();
+		user.setVisitedLocations(locations);
 
-		
+		for (int i = 1 ; i >= 7 ; i++) {
+
+		}
 	}
 	
 	public void getTripDeals() {
