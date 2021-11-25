@@ -196,7 +196,8 @@ public class TourGuideService {
 
 			u.getVisitedLocations().stream().forEach(v -> {
 				//logger.debug("Test: " + LocalDateTime.now().toInstant(ZoneOffset.UTC) + " " + v.timeVisited.toInstant());
-				if (LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS) < withinDays) {
+				//logger.debug("Test: " + LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS) + " days");
+				if (Math.abs(LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS)) < withinDays) {
 					locations.add(v.location);
 				}
 			});
