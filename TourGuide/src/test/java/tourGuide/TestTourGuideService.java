@@ -131,7 +131,7 @@ public class TestTourGuideService {
 				.filter(r -> r.getUserId().equals(user.getUserId()))
 				.findFirst().get().getLocation().size();
 
-		assertEquals(6, );
+		assertEquals(6, recentLocationCount);
 	}
 	
 	public void getTripDeals() {
