@@ -16,6 +16,7 @@ import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -184,9 +185,11 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 
-	public HashMap<UUID, Location> getUsersRecentLocations() {
+	public RecentLocationDto getUsersRecentLocations() {
 
-		return ;
+		RecentLocationDto recentLocation = new RecentLocationDto();
+
+		return recentLocation;
 	}
 
 	/** Shutting down the service.
