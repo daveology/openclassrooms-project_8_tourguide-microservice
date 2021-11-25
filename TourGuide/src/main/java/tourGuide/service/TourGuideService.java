@@ -200,6 +200,8 @@ public class TourGuideService {
 					locations.add(v.location);
 				}
 			});
+
+			recentLocations.add(new RecentLocationDto(u.getUserId(), locations));
 		});
 
 		return recentLocations;
