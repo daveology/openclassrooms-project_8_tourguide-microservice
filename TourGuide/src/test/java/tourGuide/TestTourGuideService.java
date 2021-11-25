@@ -3,6 +3,7 @@ package tourGuide;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -118,6 +119,9 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		Random rand = new Random();
 		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
+		user.setVisitedLocations(new ArrayList<>());
+
+		
 	}
 	
 	public void getTripDeals() {
