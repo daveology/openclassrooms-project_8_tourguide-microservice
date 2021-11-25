@@ -1,7 +1,9 @@
 package tourGuide.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,7 +17,8 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
-import tourGuide.model.NearAttraction;
+import tourGuide.dto.NearAttractionDto;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -138,12 +141,13 @@ public class TourGuideService {
 	 * @param visitedLocation VisitedLocation object.
 	 * @return Return the closest attraction to the model.
 	 */
-	public List<NearAttraction> getNearByAttractions(VisitedLocation visitedLocation) {
+	public List<NearAttractionDto> getNearByAttractions(VisitedLocation visitedLocation) {
 
+		List<Attraction> attractions = gpsUtil.getAttractions();
 		User user = getUserById(visitedLocation.userId);
-		List<NearAttraction> nearbyAttractions = new ArrayList<>();
-		NearAttraction nearAttraction = new NearAttraction();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
+		List<NearAttractionDto> nearbyAttractions = new ArrayList<>();
+		NearAttractionDto nearAttraction = new NearAttractionDto();
+		for(Attraction attraction : attractions) {
 			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
 				if (nearbyAttractions.size() == 5) {
 					return nearbyAttractions;
@@ -162,12 +166,11 @@ public class TourGuideService {
 			}
 		}
 
-		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		Random random = new Random();
 		if (nearbyAttractions.size() < 5) {
 			while(nearbyAttractions.size() < 5) {
-				Attraction attraction = attractionsList.get(random.nextInt(attractionsList.size()));
-				nearAttraction = new NearAttraction();
+				Attraction attraction = attractions.get(random.nextInt(attractions.size()));
+				nearAttraction = new NearAttractionDto();
 				nearAttraction.setAttractionName(attraction.attractionName);
 				nearAttraction.setAttractionLatitude(attraction.latitude);
 				nearAttraction.setAttractionLongitude(attraction.longitude);
@@ -182,6 +185,27 @@ public class TourGuideService {
 		}
 
 		return nearbyAttractions;
+	}
+
+	public List<RecentLocationDto> getUsersRecentLocations(int withinDays) {
+
+		List<RecentLocationDto> recentLocations = new ArrayList<>();
+
+		internalUserMap.values().stream().forEach(u -> {
+			List<Location> locations = new ArrayList<>();
+
+			u.getVisitedLocations().stream().forEach(v -> {
+				//logger.debug("Test: " + LocalDateTime.now().toInstant(ZoneOffset.UTC) + " " + v.timeVisited.toInstant());
+				//logger.debug("Test: " + LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS) + " days");
+				if (Math.abs(LocalDate.now().until(v.timeVisited.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), ChronoUnit.DAYS)) < withinDays) {
+					locations.add(v.location);
+				}
+			});
+
+			recentLocations.add(new RecentLocationDto(u.getUserId(), locations));
+		});
+
+		return recentLocations;
 	}
 
 	/** Shutting down the service.

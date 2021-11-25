@@ -64,7 +64,11 @@ public class User {
 	public List<VisitedLocation> getVisitedLocations() {
 		return visitedLocations;
 	}
-	
+
+	public void setVisitedLocations(List<VisitedLocation> visitedLocations) {
+		this.visitedLocations = visitedLocations;
+	}
+
 	public void clearVisitedLocations() {
 		visitedLocations.clear();
 	}

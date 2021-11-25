@@ -3,25 +3,29 @@ package tourGuide;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
 
-import org.junit.Ignore;
+import gpsUtil.location.Location;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
-import tourGuide.model.NearAttraction;
+import tourGuide.dto.NearAttractionDto;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
+
+	private Logger logger = LogManager.getLogger(TestTourGuideService.class);
 
 	@Test
 	public void getUserLocation() {
@@ -102,14 +106,41 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		Random rand = new Random();
 
-		User user = tourGuideService.getUser("internalUser" + rand.nextInt(100));
+		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
-		List<NearAttraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
 		tourGuideService.tracker.stopTracking();
 		
 		assertEquals(5, attractions.size());
+	}
+
+	@Test
+	public void shouldGetAllRecentLocations() {
+
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		Random rand = new Random();
+		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
+		List<VisitedLocation> locations = new ArrayList<>();
+		user.setVisitedLocations(new ArrayList<>());
+
+		for (int i = 1 ; i < 10 ; i++) {
+			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
+					Date.from(LocalDateTime.now().minusDays(i).toInstant(ZoneOffset.UTC))));
+			logger.debug("Test: " + Date.from(LocalDateTime.now().minusDays(i).toInstant(ZoneOffset.UTC)));
+		}
+		user.setVisitedLocations(locations);
+		tourGuideService.addUser(user);
+
+		List<Location> recentLocations = tourGuideService.getUsersRecentLocations(7).stream()
+				.filter(r -> r.getUserId().equals(user.getUserId()))
+				.findFirst().get().getLocation();
+		User updatedUser = tourGuideService.getUser(user.getUserName());
+
+		assertEquals(6, recentLocations.size());
 	}
 	
 	public void getTripDeals() {
@@ -126,6 +157,4 @@ public class TestTourGuideService {
 		
 		assertEquals(10, providers.size());
 	}
-	
-	
 }

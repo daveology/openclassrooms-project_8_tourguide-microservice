@@ -1,8 +1,8 @@
-package tourGuide.model;
+package tourGuide.dto;
 
 /** Represents a near attraction.
  */
-public class NearAttraction {
+public class NearAttractionDto {
 
     public String attractionName;
     public double attractionLatitude;
@@ -68,10 +68,10 @@ public class NearAttraction {
         this.rewardPoints = rewardPoints;
     }
 
-    public NearAttraction() { }
+    public NearAttractionDto() { }
 
-    public NearAttraction(String attractionName, double attractionLatitude, double attractionLongitude,
-                          double userLatitude, double userLongitude, double milesDistance, int rewardPoints) {
+    public NearAttractionDto(String attractionName, double attractionLatitude, double attractionLongitude,
+                             double userLatitude, double userLongitude, double milesDistance, int rewardPoints) {
         this.attractionName = attractionName;
         this.attractionLatitude = attractionLatitude;
         this.attractionLongitude = attractionLongitude;
