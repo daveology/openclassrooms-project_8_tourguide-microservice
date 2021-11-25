@@ -17,6 +17,7 @@ import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
+import tourGuide.dto.RecentLocationDto;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
@@ -134,12 +135,12 @@ public class TestTourGuideService {
 		user.setVisitedLocations(locations);
 		tourGuideService.addUser(user);
 
-		int recentLocationCount = tourGuideService.getUsersRecentLocations(7).stream()
+		List<Location> recentLocations = tourGuideService.getUsersRecentLocations(7).stream()
 				.filter(r -> r.getUserId().equals(user.getUserId()))
-				.findFirst().get().getLocation().size();
+				.findFirst().get().getLocation();
 		User updatedUser = tourGuideService.getUser(user.getUserName());
 
-		assertEquals(6, recentLocationCount);
+		assertEquals(6, recentLocations.size());
 	}
 	
 	public void getTripDeals() {
