@@ -25,4 +25,9 @@ public class RecentLocationDto {
     public void setLocation(List<Location> location) {
         this.location = location;
     }
+
+    public RecentLocationDto(UUID userId, List<Location> location) {
+        this.userId = userId;
+        this.location = location;
+    }
 }
