@@ -8,6 +8,8 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 import gpsUtil.location.Location;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
@@ -21,6 +23,8 @@ import tourGuide.model.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
+
+	private Logger logger = LogManager.getLogger(TestTourGuideService.class);
 
 	@Test
 	public void getUserLocation() {
@@ -122,14 +126,18 @@ public class TestTourGuideService {
 		List<VisitedLocation> locations = new ArrayList<>();
 		user.setVisitedLocations(new ArrayList<>());
 
-		for (int i = 1 ; i <= 7 ; i++) {
+		for (int i = 1 ; i < 10 ; i++) {
 			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
-					Date.from(LocalDateTime.now().minusDays(new Random().nextInt(i)).toInstant(ZoneOffset.UTC))));
+					Date.from(LocalDateTime.now().minusDays(i).toInstant(ZoneOffset.UTC))));
+			logger.debug("Test: " + Date.from(LocalDateTime.now().minusDays(i).toInstant(ZoneOffset.UTC)));
 		}
 		user.setVisitedLocations(locations);
+		tourGuideService.addUser(user);
+
 		int recentLocationCount = tourGuideService.getUsersRecentLocations(7).stream()
 				.filter(r -> r.getUserId().equals(user.getUserId()))
 				.findFirst().get().getLocation().size();
+		User updatedUser = tourGuideService.getUser(user.getUserName());
 
 		assertEquals(6, recentLocationCount);
 	}

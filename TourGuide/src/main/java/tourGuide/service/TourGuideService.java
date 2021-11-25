@@ -196,7 +196,8 @@ public class TourGuideService {
 			List<Location> locations = new ArrayList<>();
 
 			u.getVisitedLocations().stream().forEach(v -> {
-				if (Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), v.timeVisited.toInstant()).toDays() >= 7) {
+				//logger.debug("Test: " + LocalDateTime.now().toInstant(ZoneOffset.UTC) + " " + v.timeVisited.toInstant());
+				if (Duration.between(LocalDateTime.now().toInstant(ZoneOffset.UTC), v.timeVisited.toInstant()).toDays() < 7) {
 					locations.add(v.location);
 				}
 			});
