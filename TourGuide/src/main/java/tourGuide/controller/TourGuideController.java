@@ -43,15 +43,6 @@ public class TourGuideController {
 		return JsonStream.serialize(visitedLocation.location);
     }
     
-    //  TODO: Change this method to no longer return a List of Attractions.
- 	// [x] Instead: Get the closest five tourist attractions to the model - no matter how far away they are.
- 	// [x] Return a new JSON object that contains:
-    	// [x] Name of Tourist attraction,
-        // [x] Tourist attractions lat/long,
-        // [x] The model's location lat/long,
-        // [x] The distance in miles between the model's location and each of the attractions.
-        // [x] The reward points for visiting each Attraction.
-    // Note: Attraction reward points can be gathered from RewardsCentral
     /** User's closest attraction endpoint.
      * @param userName String containing the username.
      * @return Return the closest attraction to the model.
