@@ -188,8 +188,11 @@ public class TourGuideService {
 	public List<RecentLocationDto> getUsersRecentLocations(int withinDays) {
 
 		List<User> users = getAllUsers();
-
 		RecentLocationDto recentLocation = new RecentLocationDto();
+
+		users.stream().forEach(u -> {
+
+		});
 
 		return recentLocation;
 	}
