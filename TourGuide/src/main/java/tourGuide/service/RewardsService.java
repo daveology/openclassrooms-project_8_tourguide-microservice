@@ -50,9 +50,13 @@ public class RewardsService {
 
 		for(VisitedLocation visitedLocation : userVisitedLocations) {
 			for(Attraction attraction : attractionsList) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+				if(user.getUserRewards()
+						.stream()
+						.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+						user.addUserReward(new UserReward(visitedLocation,
+								attraction,
+								getRewardPoints(attraction, user)));
 					}
 				}
 			}
