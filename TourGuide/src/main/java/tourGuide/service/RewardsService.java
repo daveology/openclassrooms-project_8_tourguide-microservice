@@ -49,8 +49,7 @@ public class RewardsService {
 
 		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
-		List<UserReward> userRewardsList = user.getUserRewards();
-		ListIterator<UserReward> rewardIterator = userRewardsList.listIterator();
+		ListIterator<UserReward> rewardIterator = user.getUserRewards().listIterator();
 
 		for(VisitedLocation visitedLocation : userVisitedLocations) {
 			for(Attraction attraction : attractionsList) {
@@ -63,7 +62,7 @@ public class RewardsService {
 				}
 				if(rewardCount == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation,
+						rewardIterator.add(new UserReward(visitedLocation,
 								attraction,
 								getRewardPoints(attraction, user)));
 					}
