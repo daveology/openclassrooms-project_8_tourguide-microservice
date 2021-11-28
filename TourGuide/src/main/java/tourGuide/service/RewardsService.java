@@ -52,13 +52,14 @@ public class RewardsService {
 
 		for(VisitedLocation visitedLocation : userVisitedLocations) {
 			for(Attraction attraction : attractionsList) {
+				int rewardCount = 0;
 				while (rewardIterator.hasNext()) {
 					UserReward userReward = rewardIterator.next();
-
+					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
+						rewardCount++;
+					}
 				}
-				if(user.getUserRewards()
-						.stream()
-						.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+				if(rewardCount == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
 						user.addUserReward(new UserReward(visitedLocation,
 								attraction,
