@@ -56,8 +56,8 @@ public class RewardsService {
 			for(Attraction attraction : attractionsList) {
 				int rewardCount = 0;
 				while (rewardIterator.hasNext()) {
-					UserReward userReward = rewardIterator.next();
-					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
+					String attractionName = rewardIterator.next().attraction.attractionName;
+					if (attractionName.equals(attraction.attractionName)) {
 						rewardCount++;
 					}
 				}
