@@ -50,8 +50,8 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		List<Attraction> attractionsList = new ArrayList<>();
-		List<UserReward> userRewardsList = new ArrayList<>();
+		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<Attraction>();
+		Queue<UserReward> userRewardsList = new ConcurrentLinkedQueue<UserReward>();
 		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<VisitedLocation>();
 		attractionsList.addAll(gpsUtil.getAttractions());
 		userVisitedLocations.addAll(user.getVisitedLocations());
