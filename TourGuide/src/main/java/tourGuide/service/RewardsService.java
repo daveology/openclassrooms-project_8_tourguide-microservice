@@ -1,8 +1,7 @@
 package tourGuide.service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,24 +50,26 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
-		List<Attraction> attractionsList = gpsUtil.getAttractions();
-		ListIterator<UserReward> userRewardsList = user.getUserRewards().listIterator();
+		List<Attraction> attractionsList = new ArrayList<>();
+		List<UserReward> userRewardsList = new ArrayList<>();
+		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<VisitedLocation>();
+		attractionsList.addAll(gpsUtil.getAttractions());
+		userVisitedLocations.addAll(user.getVisitedLocations());
+		userRewardsList.addAll(user.getUserRewards());
 
 		for (VisitedLocation visitedLocation : userVisitedLocations) {
 			for (Attraction attraction : attractionsList) {
-				int rewardCount = 0;
-				while (userRewardsList.hasNext()) {
-					String attractionName = userRewardsList.next().attraction.attractionName;
-					if (attractionName.equals(attraction.attractionName)) {
-						rewardCount++;
+				int attractionsCount = 0;
+				for (UserReward userReward : userRewardsList) {
+					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
+						attractionsCount++;
 					}
 				}
-				if(rewardCount == 0) {
+				if(attractionsCount == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
-						logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
-								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");
-						userRewardsList.add(new UserReward(visitedLocation,
+						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
+								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");*/
+						user.addUserReward(new UserReward(visitedLocation,
 								attraction,
 								getRewardPoints(attraction, user)));
 					}
