@@ -52,6 +52,10 @@ public class RewardsService {
 
 		for(VisitedLocation visitedLocation : userVisitedLocations) {
 			for(Attraction attraction : attractionsList) {
+				while (rewardIterator.hasNext()) {
+					UserReward userReward = rewardIterator.next();
+
+				}
 				if(user.getUserRewards()
 						.stream()
 						.filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
