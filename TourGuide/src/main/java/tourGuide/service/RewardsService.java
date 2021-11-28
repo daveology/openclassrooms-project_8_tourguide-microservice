@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class RewardsService {
 
 		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		Iterator<UserReward> rewardIterator = user.getUserRewards().iterator();
 
 		for(VisitedLocation visitedLocation : userVisitedLocations) {
 			for(Attraction attraction : attractionsList) {
