@@ -1,7 +1,10 @@
 package tourGuide.service;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -25,6 +28,8 @@ public class RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
+
+	private Logger logger = LogManager.getLogger(RewardsService.class);
 	
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 
@@ -45,14 +50,28 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
-		
-		for(VisitedLocation visitedLocation : userLocations) {
-			for(Attraction attraction : attractions) {
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<Attraction>();
+		Queue<UserReward> userRewardsList = new ConcurrentLinkedQueue<UserReward>();
+		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<VisitedLocation>();
+		attractionsList.addAll(gpsUtil.getAttractions());
+		userVisitedLocations.addAll(user.getVisitedLocations());
+		userRewardsList.addAll(user.getUserRewards());
+
+		for (VisitedLocation visitedLocation : userVisitedLocations) {
+			for (Attraction attraction : attractionsList) {
+				int attractionsCount = 0;
+				for (UserReward userReward : userRewardsList) {
+					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
+						attractionsCount++;
+					}
+				}
+				if(attractionsCount == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
+								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");*/
+						user.addUserReward(new UserReward(visitedLocation,
+								attraction,
+								getRewardPoints(attraction, user)));
 					}
 				}
 			}
