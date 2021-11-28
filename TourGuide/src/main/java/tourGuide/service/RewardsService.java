@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -27,6 +29,8 @@ public class RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
+
+	private Logger logger = LogManager.getLogger(RewardsService.class);
 	
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 
@@ -49,20 +53,22 @@ public class RewardsService {
 
 		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
-		ListIterator<UserReward> rewardIterator = user.getUserRewards().listIterator();
+		ListIterator<UserReward> userRewardsList = user.getUserRewards().listIterator();
 
-		for(VisitedLocation visitedLocation : userVisitedLocations) {
-			for(Attraction attraction : attractionsList) {
+		for (VisitedLocation visitedLocation : userVisitedLocations) {
+			for (Attraction attraction : attractionsList) {
 				int rewardCount = 0;
-				while (rewardIterator.hasNext()) {
-					String attractionName = rewardIterator.next().attraction.attractionName;
+				while (userRewardsList.hasNext()) {
+					String attractionName = userRewardsList.next().attraction.attractionName;
 					if (attractionName.equals(attraction.attractionName)) {
 						rewardCount++;
 					}
 				}
 				if(rewardCount == 0) {
 					if(nearAttraction(visitedLocation, attraction)) {
-						rewardIterator.add(new UserReward(visitedLocation,
+						logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
+								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");
+						userRewardsList.add(new UserReward(visitedLocation,
 								attraction,
 								getRewardPoints(attraction, user)));
 					}
