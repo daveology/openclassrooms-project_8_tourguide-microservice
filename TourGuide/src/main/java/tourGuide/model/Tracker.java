@@ -1,9 +1,7 @@
 package tourGuide.model;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +14,7 @@ public class Tracker extends Thread {
 	private Logger logger = LogManager.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private final ForkJoinPool forkJoinPool = new ForkJoinPool(100);
 	private final TourGuideService tourGuideService;
 	private boolean stop = false;
 
@@ -50,7 +49,11 @@ public class Tracker extends Thread {
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocation(u));
+			users.forEach(u -> {
+						CompletableFuture
+								.runAsync(() -> tourGuideService.trackUserLocation(u), forkJoinPool);
+						//.exceptionally();
+					});
 			stopWatch.stop();
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 			stopWatch.reset();
