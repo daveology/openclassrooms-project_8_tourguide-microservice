@@ -2,6 +2,7 @@ package tourGuide.service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,9 +51,9 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<Attraction>();
-		Queue<UserReward> userRewardsList = new ConcurrentLinkedQueue<UserReward>();
-		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<VisitedLocation>();
+		Queue<Attraction> attractionsList = new LinkedBlockingQueue<Attraction>();
+		Queue<UserReward> userRewardsList = new LinkedBlockingQueue<UserReward>();
+		Queue<VisitedLocation> userVisitedLocations = new LinkedBlockingQueue<VisitedLocation>();
 		attractionsList.addAll(gpsUtil.getAttractions());
 		userVisitedLocations.addAll(user.getVisitedLocations());
 		userRewardsList.addAll(user.getUserRewards());
