@@ -231,12 +231,12 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 10000).forEach(i -> {
+		IntStream.range(0, 1000).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
-			logger.debug("Create User: " + user.getUserName());
+			//logger.debug("Create User: " + user.getUserName());
 			generateUserLocationHistory(user);
 			
 			internalUserMap.put(userName, user);

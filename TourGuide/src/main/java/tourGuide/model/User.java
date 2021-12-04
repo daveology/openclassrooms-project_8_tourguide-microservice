@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
@@ -58,7 +62,12 @@ public class User {
 	}
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
-		visitedLocations.add(visitedLocation);
+
+		ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L,
+				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		executor.submit(() -> {
+			visitedLocations.add(visitedLocation);
+		});
 	}
 	
 	public List<VisitedLocation> getVisitedLocations() {
