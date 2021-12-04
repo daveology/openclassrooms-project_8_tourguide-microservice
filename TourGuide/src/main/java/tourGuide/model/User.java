@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+import com.jsoniter.spi.OmitValue;
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
 
@@ -82,9 +80,22 @@ public class User {
 		visitedLocations.clear();
 	}
 	
-	public void addUserReward(UserReward userReward) {
+	public void addUserReward(UserReward userReward) throws ExecutionException, InterruptedException {
 
-		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+		CompletableFuture<Integer> count = CompletableFuture.supplyAsync(() -> {
+
+			int futureCount = 0;
+
+			userRewards.stream().filter(r -> {
+				if (!r.attraction.attractionName.equals(userReward.attraction)) {
+					futureCount++;
+				}
+			});
+
+			return futureCount;
+		});
+
+		if (count.get() <= 0) {
 			userRewards.add(userReward);
 		}
 	}
