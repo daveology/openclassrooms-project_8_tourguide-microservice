@@ -51,16 +51,16 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		Stream<VisitedLocation> userVisitedLocations = user.getVisitedLocations().parallelStream();
-		Stream<Attraction> attractionsList = gpsUtil.getAttractions().parallelStream();
-		Stream<UserReward> userRewardsList = user.getUserRewards().parallelStream();
+		LinkedBlockingQueue<VisitedLocation> userVisitedLocations = new LinkedBlockingQueue();
+		userVisitedLocations.addAll(user.getVisitedLocations());
+		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		List<UserReward> userRewardsList = user.getUserRewards();
 
-		ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L,
-				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		ForkJoinPool executor = new ForkJoinPool(2);
 		executor.submit(() -> {
 			userVisitedLocations.forEach(visitedLocation -> {
-				attractionsList.forEach (attraction -> {
-					int attractionsCount = (int) userRewardsList.filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
+				attractionsList.forEach(attraction -> {
+					int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
 					if(attractionsCount == 0) {
 						if(nearAttraction(visitedLocation, attraction)) {
 						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
@@ -117,6 +117,7 @@ public class RewardsService {
 
         double nauticalMiles = 60 * Math.toDegrees(angle);
         double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
+
         return statuteMiles;
 	}
 }
