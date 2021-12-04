@@ -1,8 +1,7 @@
 package tourGuide.service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,25 +57,29 @@ public class RewardsService {
 		userVisitedLocations.addAll(user.getVisitedLocations());
 		userRewardsList.addAll(user.getUserRewards());
 
-		for (VisitedLocation visitedLocation : userVisitedLocations) {
-			for (Attraction attraction : attractionsList) {
-				int attractionsCount = 0;
-				for (UserReward userReward : userRewardsList) {
-					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
-						attractionsCount++;
+		ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L,
+				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		executor.submit(() -> {
+			for (VisitedLocation visitedLocation : userVisitedLocations) {
+				for (Attraction attraction : attractionsList) {
+					int attractionsCount = 0;
+					for (UserReward userReward : userRewardsList) {
+						if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
+							attractionsCount++;
+						}
 					}
-				}
-				if(attractionsCount == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
+					if(attractionsCount == 0) {
+						if(nearAttraction(visitedLocation, attraction)) {
 						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
 								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");*/
-						user.addUserReward(new UserReward(visitedLocation,
-								attraction,
-								getRewardPoints(attraction, user)));
+							user.addUserReward(new UserReward(visitedLocation,
+									attraction,
+									getRewardPoints(attraction, user)));
+						}
 					}
 				}
 			}
-		}
+		});
 	}
 
 	/** Tell if the an attraction is close.
