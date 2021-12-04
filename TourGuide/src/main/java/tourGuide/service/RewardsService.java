@@ -51,14 +51,14 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
+		Stream<VisitedLocation> userVisitedLocations = user.getVisitedLocations().parallelStream();
 		Stream<Attraction> attractionsList = gpsUtil.getAttractions().parallelStream();
 		Stream<UserReward> userRewardsList = user.getUserRewards().parallelStream();
-		Stream<VisitedLocation> userVisitedLocations = user.getVisitedLocations().parallelStream();
 
 		ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L,
 				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 		executor.submit(() -> {
-			for (VisitedLocation visitedLocation : userVisitedLocations) {
+			userVisitedLocations.forEach(visitedLocation -> {
 				for (Attraction attraction : attractionsList) {
 					int attractionsCount = 0;
 					for (UserReward userReward : userRewardsList) {
@@ -76,7 +76,7 @@ public class RewardsService {
 						}
 					}
 				}
-			}
+			});
 		});
 	}
 
