@@ -61,7 +61,7 @@ public class RewardsService {
 			userVisitedLocations.forEach(visitedLocation -> {
 				attractionsList.forEach (attraction -> {
 					int attractionsCount = 0;
-					for (UserReward userReward : userRewardsList) {
+					userRewardsList.forEach (userReward -> {
 						if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
 							attractionsCount++;
 						}
