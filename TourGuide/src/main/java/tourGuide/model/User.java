@@ -92,9 +92,7 @@ public class User {
 							incrementedCount.getAndIncrement();
 						});
 
-				return incrementedCount;
-			}).thenApply(occurrencesResult -> {
-				return occurrencesResult;
+				return incrementedCount.get();
 			});
 
 			if (occurrences.get() <= 0) {
