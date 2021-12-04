@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.jsoniter.spi.OmitValue;
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
 
@@ -80,23 +80,30 @@ public class User {
 		visitedLocations.clear();
 	}
 	
-	public void addUserReward(UserReward userReward) throws ExecutionException, InterruptedException {
+	public void addUserReward(UserReward userReward) {
 
-		CompletableFuture<Integer> count = CompletableFuture.supplyAsync(() -> {
+		try {
+			CompletableFuture<Integer> occurrences = CompletableFuture.supplyAsync(() -> {
 
-			int futureCount = 0;
+				AtomicInteger incrementedCount = new AtomicInteger();
+				userRewards.stream()
+						.filter(r -> (!r.attraction.attractionName.equals(userReward.attraction)))
+						.forEach(r -> {
+							incrementedCount.getAndIncrement();
+						});
 
-			userRewards.stream().filter(r -> {
-				if (!r.attraction.attractionName.equals(userReward.attraction)) {
-					futureCount++;
-				}
+				return incrementedCount;
+			}).thenApply(occurrencesResult -> {
+				return occurrencesResult;
 			});
 
-			return futureCount;
-		});
-
-		if (count.get() <= 0) {
-			userRewards.add(userReward);
+			if (occurrences.get() <= 0) {
+				userRewards.add(userReward);
+			}
+		} catch (ExecutionException ee) {
+			ee.printStackTrace();
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
 		}
 	}
 	
