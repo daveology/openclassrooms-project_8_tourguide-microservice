@@ -61,11 +61,7 @@ public class User {
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
 
-		ExecutorService executor = new ThreadPoolExecutor(1, 1, 0L,
-				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-		executor.submit(() -> {
 			visitedLocations.add(visitedLocation);
-		});
 	}
 	
 	public List<VisitedLocation> getVisitedLocations() {
