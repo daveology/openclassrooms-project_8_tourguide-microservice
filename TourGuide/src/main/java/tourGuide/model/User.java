@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
@@ -78,26 +79,12 @@ public class User {
 	
 	public void addUserReward(UserReward userReward) {
 
-		try {
-			CompletableFuture<Integer> occurrences = CompletableFuture.supplyAsync(() -> {
+		Stream<UserReward> userRewardStream = getUserRewards().parallelStream();
+		int count = (int) userRewardStream
+				.filter(reward -> (!reward.attraction.attractionName.equals(userReward.attraction))).count();
 
-				AtomicInteger incrementedCount = new AtomicInteger();
-				userRewards.stream()
-						.filter(r -> (!r.attraction.attractionName.equals(userReward.attraction)))
-						.forEach(r -> {
-							incrementedCount.getAndIncrement();
-						});
-
-				return incrementedCount.get();
-			});
-
-			if (occurrences.get() <= 0) {
-				userRewards.add(userReward);
-			}
-		} catch (ExecutionException ee) {
-			ee.printStackTrace();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
+		if (count == 0) {
+			userRewards.add(userReward);
 		}
 	}
 	
