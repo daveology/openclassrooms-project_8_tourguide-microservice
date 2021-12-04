@@ -60,12 +60,7 @@ public class RewardsService {
 		executor.submit(() -> {
 			userVisitedLocations.forEach(visitedLocation -> {
 				attractionsList.forEach (attraction -> {
-					int attractionsCount = 0;
-					userRewardsList.forEach (userReward -> {
-						if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
-							attractionsCount++;
-						}
-					}
+					int attractionsCount = (int) userRewardsList.filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
 					if(attractionsCount == 0) {
 						if(nearAttraction(visitedLocation, attraction)) {
 						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
@@ -75,7 +70,7 @@ public class RewardsService {
 									getRewardPoints(attraction, user)));
 						}
 					}
-				}
+				});
 			});
 		});
 	}
