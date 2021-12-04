@@ -1,8 +1,8 @@
 package tourGuide.service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,32 +51,28 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		Queue<Attraction> attractionsList = new LinkedBlockingQueue<Attraction>();
-		Queue<UserReward> userRewardsList = new LinkedBlockingQueue<UserReward>();
-		Queue<VisitedLocation> userVisitedLocations = new LinkedBlockingQueue<VisitedLocation>();
-		attractionsList.addAll(gpsUtil.getAttractions());
+		LinkedBlockingQueue<VisitedLocation> userVisitedLocations = new LinkedBlockingQueue();
 		userVisitedLocations.addAll(user.getVisitedLocations());
-		userRewardsList.addAll(user.getUserRewards());
+		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		List<UserReward> userRewardsList = user.getUserRewards();
 
-		for (VisitedLocation visitedLocation : userVisitedLocations) {
-			for (Attraction attraction : attractionsList) {
-				int attractionsCount = 0;
-				for (UserReward userReward : userRewardsList) {
-					if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
-						attractionsCount++;
-					}
-				}
-				if(attractionsCount == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
+		ForkJoinPool executor = new ForkJoinPool(2);
+		executor.submit(() -> {
+			userVisitedLocations.forEach(visitedLocation -> {
+				attractionsList.forEach(attraction -> {
+					int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
+					if(attractionsCount == 0) {
+						if(nearAttraction(visitedLocation, attraction)) {
 						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
 								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");*/
-						user.addUserReward(new UserReward(visitedLocation,
-								attraction,
-								getRewardPoints(attraction, user)));
+							user.addUserReward(new UserReward(visitedLocation,
+									attraction,
+									getRewardPoints(attraction, user)));
+						}
 					}
-				}
-			}
-		}
+				});
+			});
+		});
 	}
 
 	/** Tell if the an attraction is close.
@@ -121,6 +117,7 @@ public class RewardsService {
 
         double nauticalMiles = 60 * Math.toDegrees(angle);
         double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
+
         return statuteMiles;
 	}
 }

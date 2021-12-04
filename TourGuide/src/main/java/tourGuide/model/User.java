@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import gpsUtil.location.VisitedLocation;
 import tripPricer.Provider;
@@ -58,7 +61,8 @@ public class User {
 	}
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
-		visitedLocations.add(visitedLocation);
+
+			visitedLocations.add(visitedLocation);
 	}
 	
 	public List<VisitedLocation> getVisitedLocations() {
@@ -75,7 +79,11 @@ public class User {
 	
 	public void addUserReward(UserReward userReward) {
 
-		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+		Stream<UserReward> userRewardStream = getUserRewards().parallelStream();
+		int count = (int) userRewardStream
+				.filter(reward -> (!reward.attraction.attractionName.equals(userReward.attraction))).count();
+
+		if (count == 0) {
 			userRewards.add(userReward);
 		}
 	}
