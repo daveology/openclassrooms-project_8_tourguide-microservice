@@ -59,7 +59,7 @@ public class RewardsService {
 				TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 		executor.submit(() -> {
 			userVisitedLocations.forEach(visitedLocation -> {
-				for (Attraction attraction : attractionsList) {
+				attractionsList.forEach (attraction -> {
 					int attractionsCount = 0;
 					for (UserReward userReward : userRewardsList) {
 						if (userReward.attraction.attractionName.equals(attraction.attractionName)) {
