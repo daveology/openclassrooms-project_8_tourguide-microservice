@@ -51,12 +51,12 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		LinkedBlockingQueue<VisitedLocation> userVisitedLocations = new LinkedBlockingQueue();
+		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue();
 		userVisitedLocations.addAll(user.getVisitedLocations());
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		ForkJoinPool executor = new ForkJoinPool(2);
+		ForkJoinPool executor = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
 		executor.submit(() -> {
 			userVisitedLocations.forEach(visitedLocation -> {
 				attractionsList.forEach(attraction -> {
