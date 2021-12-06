@@ -51,25 +51,30 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		ExecutorService executorService =
-				Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
 		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		userVisitedLocations.forEach(visitedLocation -> {
-			attractionsList.forEach(attraction -> {
-				int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
-				if (attractionsCount == 0) {
-					if (nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation,
-								attraction,
-								getRewardPoints(attraction, user)));
-					}
-				}
-			});
-		});
+
+		ExecutorService executorService =
+				Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		for(int t = 1; t < Runtime.getRuntime().availableProcessors(); t++) {
+			Runnable r = () -> {
+				userVisitedLocations.forEach(visitedLocation -> {
+					attractionsList.forEach(attraction -> {
+						int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
+						if (attractionsCount == 0) {
+							if (nearAttraction(visitedLocation, attraction)) {
+								user.addUserReward(new UserReward(visitedLocation,
+										attraction,
+										getRewardPoints(attraction, user)));
+							}
+						}
+					});
+				});
+			};
+			executorService.submit(r);
+		}
 		executorService.shutdown();
 	}
 
