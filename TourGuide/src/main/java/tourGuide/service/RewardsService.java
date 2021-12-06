@@ -56,8 +56,8 @@ public class RewardsService {
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		ForkJoinPool executor = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
-		executor.submit(() -> {
+		Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		executor.execute(() -> {
 			userVisitedLocations.forEach(visitedLocation -> {
 				attractionsList.forEach(attraction -> {
 					int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();

@@ -79,11 +79,7 @@ public class User {
 	
 	public void addUserReward(UserReward userReward) {
 
-		Stream<UserReward> userRewardStream = getUserRewards().parallelStream();
-		int count = (int) userRewardStream
-				.filter(reward -> (!reward.attraction.attractionName.equals(userReward.attraction))).count();
-
-		if (count == 0) {
+		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
 			userRewards.add(userReward);
 		}
 	}
