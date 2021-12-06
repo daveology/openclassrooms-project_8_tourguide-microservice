@@ -51,30 +51,26 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue();
-		userVisitedLocations.addAll(user.getVisitedLocations());
+		ExecutorService executorService =
+				Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		CompletableFuture<String> completableFuture = new CompletableFuture<>();
-		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		Runnable task = () -> {
-			userVisitedLocations.forEach(visitedLocation -> {
-				attractionsList.forEach(attraction -> {
-					int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
-					if(attractionsCount == 0) {
-						if(nearAttraction(visitedLocation, attraction)) {
-						/*logger.debug("Test: UserReward(" + visitedLocation.userId + ", "
-								+ attraction.attractionName + ", " + getRewardPoints(attraction, user) + ")");*/
-							user.addUserReward(new UserReward(visitedLocation,
-									attraction,
-									getRewardPoints(attraction, user)));
-						}
+		userVisitedLocations.forEach(visitedLocation -> {
+			attractionsList.forEach(attraction -> {
+				int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
+				if (attractionsCount == 0) {
+					if (nearAttraction(visitedLocation, attraction)) {
+						user.addUserReward(new UserReward(visitedLocation,
+								attraction,
+								getRewardPoints(attraction, user)));
 					}
-				});
+				}
 			});
-		};
-		executor.execute(task);
+		});
+		executorService.shutdown();
 	}
 
 	/** Tell if the an attraction is close.
