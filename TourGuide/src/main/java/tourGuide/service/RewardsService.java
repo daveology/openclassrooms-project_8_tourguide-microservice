@@ -56,8 +56,9 @@ public class RewardsService {
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		Executor executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		executor.execute(() -> {
+		CompletableFuture<String> completableFuture = new CompletableFuture<>();
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		Runnable task = () -> {
 			userVisitedLocations.forEach(visitedLocation -> {
 				attractionsList.forEach(attraction -> {
 					int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
@@ -72,7 +73,8 @@ public class RewardsService {
 					}
 				});
 			});
-		});
+		};
+		executor.execute(task);
 	}
 
 	/** Tell if the an attraction is close.
