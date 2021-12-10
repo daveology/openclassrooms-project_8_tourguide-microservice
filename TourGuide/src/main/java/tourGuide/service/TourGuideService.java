@@ -127,25 +127,6 @@ public class TourGuideService {
 	 * @return Return model's location.
 	 */
 	public VisitedLocation trackUserLocation(User user) {
-		/*ExecutorService executorService =
-				Executors.newFixedThreadPool(1);
-		VisitedLocation location = null;
-		try {
-			location = CompletableFuture.supplyAsync(() -> {
-				VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-				user.addToVisitedLocations(visitedLocation);
-				CompletableFuture.runAsync(() -> {
-					rewardsService.calculateRewards(user);
-				});
-				return visitedLocation;
-			}, executorService).get();
-		} catch (InterruptedException | ExecutionException e) {
-			logger.debug(e);
-		} finally {
-			executorService.shutdown();
-		}*/
-
-		//return location;
 
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocation(visitedLocation);
