@@ -60,7 +60,7 @@ public class User {
 		return latestLocationTimestamp;
 	}
 	
-	public void addToVisitedLocations(VisitedLocation visitedLocation) {
+	public void addToVisitedLocation(VisitedLocation visitedLocation) {
 
 			visitedLocations.add(visitedLocation);
 	}
