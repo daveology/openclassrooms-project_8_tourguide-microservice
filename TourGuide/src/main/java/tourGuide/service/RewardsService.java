@@ -2,8 +2,7 @@ package tourGuide.service;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,22 +51,24 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
-		List<VisitedLocation> userVisitedLocations = user.getVisitedLocations();
-		List<Attraction> attractionsList = gpsUtil.getAttractions();
+		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<>();
+		userVisitedLocations.addAll(user.getVisitedLocations());
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-		CompletableFuture.runAsync(() -> {
-					userVisitedLocations.forEach(visitedLocation -> {
-						attractionsList.stream().filter(attraction -> userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
-								.forEach(attraction -> {
-									if (nearAttraction(visitedLocation, attraction)) {
-										user.addUserReward(new UserReward(visitedLocation,
-												attraction,
-												getRewardPoints(attraction, user)));
-									}
-								});
-					});
-				});
+		CompletableFuture.supplyAsync(() -> gpsUtil.getAttractions()).thenCompose(attractionsList -> CompletableFuture.runAsync(() -> {
+			userVisitedLocations.forEach(visitedLocation -> {
+				attractionsList.stream().filter(attraction -> userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
+						.forEach(attraction -> {
+							if (nearAttraction(visitedLocation, attraction)) {
+								user.addUserReward(new UserReward(visitedLocation,
+										attraction,
+										getRewardPoints(attraction, user)));
+							}
+						});
+			});
+		}));
+
+
 	}
 
 	/** Tell if the an attraction is close.
