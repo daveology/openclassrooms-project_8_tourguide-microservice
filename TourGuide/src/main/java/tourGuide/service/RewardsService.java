@@ -2,6 +2,7 @@ package tourGuide.service;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,27 +56,18 @@ public class RewardsService {
 		List<Attraction> attractionsList = gpsUtil.getAttractions();
 		List<UserReward> userRewardsList = user.getUserRewards();
 
-
-		ExecutorService executorService =
-				Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-		for(int t = 1; t < Runtime.getRuntime().availableProcessors(); t++) {
-			Runnable r = () -> {
-				userVisitedLocations.forEach(visitedLocation -> {
-					attractionsList.forEach(attraction -> {
-						int attractionsCount = (int) userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count();
-						if (attractionsCount == 0) {
-							if (nearAttraction(visitedLocation, attraction)) {
-								user.addUserReward(new UserReward(visitedLocation,
-										attraction,
-										getRewardPoints(attraction, user)));
-							}
-						}
+		CompletableFuture.runAsync(() -> {
+					userVisitedLocations.forEach(visitedLocation -> {
+						attractionsList.stream().filter(attraction -> userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
+								.forEach(attraction -> {
+									if (nearAttraction(visitedLocation, attraction)) {
+										user.addUserReward(new UserReward(visitedLocation,
+												attraction,
+												getRewardPoints(attraction, user)));
+									}
+								});
 					});
 				});
-			};
-			executorService.submit(r);
-		}
-		executorService.shutdown();
 	}
 
 	/** Tell if the an attraction is close.

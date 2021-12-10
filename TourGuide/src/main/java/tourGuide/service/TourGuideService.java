@@ -5,6 +5,10 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -129,6 +133,25 @@ public class TourGuideService {
 	 * @return Return model's location.
 	 */
 	public VisitedLocation trackUserLocation(User user) {
+		/*ExecutorService executorService =
+				Executors.newFixedThreadPool(1);
+		VisitedLocation location = null;
+		try {
+			location = CompletableFuture.supplyAsync(() -> {
+				VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+				user.addToVisitedLocations(visitedLocation);
+				CompletableFuture.runAsync(() -> {
+					rewardsService.calculateRewards(user);
+				});
+				return visitedLocation;
+			}, executorService).get();
+		} catch (InterruptedException | ExecutionException e) {
+			logger.debug(e);
+		} finally {
+			executorService.shutdown();
+		}*/
+
+		//return location;
 
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
@@ -231,7 +254,7 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 100).forEach(i -> {
+		IntStream.range(0, 1000).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
