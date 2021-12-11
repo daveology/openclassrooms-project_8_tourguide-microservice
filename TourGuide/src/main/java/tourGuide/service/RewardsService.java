@@ -51,24 +51,20 @@ public class RewardsService {
 	 */
 	public void calculateRewards(User user) {
 
+		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<>();
+		attractionsList.addAll(gpsUtil.getAttractions());
 		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<>();
 		userVisitedLocations.addAll(user.getVisitedLocations());
-		List<UserReward> userRewardsList = user.getUserRewards();
 
-		CompletableFuture.supplyAsync(() -> gpsUtil.getAttractions()).thenCompose(attractionsList -> CompletableFuture.runAsync(() -> {
-			userVisitedLocations.forEach(visitedLocation -> {
-				attractionsList.stream().filter(attraction -> userRewardsList.stream().filter(userReward -> userReward.attraction.attractionName.equals(attraction.attractionName)).count() == 0)
+			userVisitedLocations.stream().forEach(visitedLocation -> CompletableFuture.runAsync(() -> {
+				attractionsList.stream()
+						.filter(attraction -> nearAttraction(visitedLocation, attraction))
 						.forEach(attraction -> {
-							if (nearAttraction(visitedLocation, attraction)) {
-								user.addUserReward(new UserReward(visitedLocation,
-										attraction,
-										getRewardPoints(attraction, user)));
-							}
+							user.addUserReward(new UserReward(visitedLocation,
+									attraction,
+									getRewardPoints(attraction, user)));
 						});
-			});
-		}));
-
-
+			}).join());
 	}
 
 	/** Tell if the an attraction is close.

@@ -47,14 +47,13 @@ public class Tracker extends Thread {
 			
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
-			stopWatch.start();
-			CompletableFuture.runAsync(() -> {
-				users.forEach(u -> {
-					 tourGuideService.trackUserLocation(u);
-				});
-			});
 
+			stopWatch.start();
+			users.forEach(u -> {
+				 tourGuideService.trackUserLocation(u);
+			});
 			stopWatch.stop();
+
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 			stopWatch.reset();
 
