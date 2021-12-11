@@ -38,25 +38,37 @@ public class Tracker extends Thread {
 	 */
 	@Override
 	public void run() {
+
+		//=== SERVICES ===
 		StopWatch stopWatch = new StopWatch();
+
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
 				logger.debug("Tracker stopping");
 				break;
 			}
-			
+
+			// Retrieves the users
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 
+			//=== TIMER START ===
 			stopWatch.start();
-			users.forEach(u -> {
-				 tourGuideService.trackUserLocation(u);
-			});
-			stopWatch.stop();
 
+			// Tracks asynchronously each user's location
+			CompletableFuture<?>[] trackFutureUserLocations = users.stream()
+					.map(tourGuideService::trackUserLocation)
+					.toArray(CompletableFuture[]::new);
+			CompletableFuture.allOf(trackFutureUserLocations).join();
+
+			stopWatch.stop();
+			//=== TIMER END ===
+
+			// Reset the timer and print the time result
 			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 			stopWatch.reset();
 
+			// Sleeps 5 seconds
 			try {
 				logger.debug("Tracker sleeping");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);
