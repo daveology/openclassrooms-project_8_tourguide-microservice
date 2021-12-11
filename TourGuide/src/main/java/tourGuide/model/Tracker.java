@@ -1,9 +1,7 @@
 package tourGuide.model;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -40,21 +38,37 @@ public class Tracker extends Thread {
 	 */
 	@Override
 	public void run() {
+
+		//=== SERVICES ===
 		StopWatch stopWatch = new StopWatch();
+
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
 				logger.debug("Tracker stopping");
 				break;
 			}
-			
+
+			// Retrieves the users
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
+
+			//=== TIMER START ===
 			stopWatch.start();
-			users.forEach(u -> tourGuideService.trackUserLocation(u));
+
+			// Tracks asynchronously each user's location
+			CompletableFuture<?>[] trackFutureUserLocations = users.stream()
+					.map(tourGuideService::trackUserLocation)
+					.toArray(CompletableFuture[]::new);
+			CompletableFuture.allOf(trackFutureUserLocations).join();
+
 			stopWatch.stop();
-			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
+			//=== TIMER END ===
+
+			// Reset the timer and print the time result
+			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
 			stopWatch.reset();
 
+			// Sleeps 5 seconds
 			try {
 				logger.debug("Tracker sleeping");
 				TimeUnit.SECONDS.sleep(trackingPollingInterval);
