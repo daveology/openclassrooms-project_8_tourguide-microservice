@@ -43,26 +43,34 @@ public class TestPerformance {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 
+	/**
+	 * Users should be incremented up to 100,000, and test finishes within 15 minutes
+	 */
 	@Test
 	public void highVolumeTrackLocation() {
+
+		//=== SERVICES ===
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		InternalTestHelper.setInternalUserNumber(100000);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		StopWatch stopWatch = new StopWatch();
 
+		//=== TEST SUBJECTS ===
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
-		
-	    StopWatch stopWatch = new StopWatch();
+
+		//=== TIMER START===
+
 		stopWatch.start();
-		for(User user : allUsers) {
-			tourGuideService.trackUserLocation(user);
-		}
+		allUsers.forEach(user -> tourGuideService.trackUserLocation(user));
+
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
+		//=== TIMER END ===
 
+		// Print the time result
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
+
 		assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
 
@@ -95,9 +103,7 @@ public class TestPerformance {
 		CompletableFuture.allOf(calculateFutureRewards).join();
 
 		// Test if each user received the rewards
-		allUsers.stream().parallel().forEach(user -> {
-			assertTrue(user.getUserRewards().size() > 0);
-		});
+		allUsers.forEach(user -> assertTrue(user.getUserRewards().size() > 0));
 
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
