@@ -2,39 +2,40 @@ package tourGuide.service;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
+import tourGuide.proxy.GpsUtilProxy;
 
 /** Provides the rewards functionalities.
  */
 @Service
 public class RewardsService {
 
-    private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+	private Logger logger = LogManager.getLogger(RewardsService.class);
 
+	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 	// proximity in miles
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
-	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
 
-	private Logger logger = LogManager.getLogger(RewardsService.class);
-	
-	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
+	@Autowired
+	private final GpsUtilProxy gpsUtilProxy;
 
-		this.gpsUtil = gpsUtil;
+	public RewardsService(GpsUtilProxy gpsUtilProxy, RewardCentral rewardCentral) {
+
+		this.gpsUtilProxy = gpsUtilProxy;
 		this.rewardsCentral = rewardCentral;
 	}
 	
@@ -52,7 +53,7 @@ public class RewardsService {
 	public CompletableFuture<?> calculateRewards(User user) {
 
 		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<>();
-		attractionsList.addAll(gpsUtil.getAttractions());
+		attractionsList.addAll(gpsUtilProxy.getAttractions());
 		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<>();
 		userVisitedLocations.addAll(user.getVisitedLocations());
 
