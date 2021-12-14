@@ -61,9 +61,12 @@ public class RewardsService {
 					attractionsList.stream()
 							.filter(attraction -> nearAttraction(visitedLocation, attraction))
 							.forEach(attraction -> {
-								user.addUserReward(new UserReward(visitedLocation,
-										attraction,
-										getRewardPoints(attraction, user)));
+								if(user.getUserRewards().parallelStream().noneMatch(r ->
+										r.attraction.attractionName.equals(attraction.attractionName))) {
+									user.addUserReward(new UserReward(visitedLocation,
+											attraction,
+											getRewardPoints(attraction, user)));
+								}
 							});
 			});
 		});
