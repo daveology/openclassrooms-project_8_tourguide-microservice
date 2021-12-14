@@ -1,7 +1,7 @@
 package tourGuide.model;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.model.Attraction;
+import tourGuide.model.VisitedLocation;
 
 /** Represents the model reward.
  */

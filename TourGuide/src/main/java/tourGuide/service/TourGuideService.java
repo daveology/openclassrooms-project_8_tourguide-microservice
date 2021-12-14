@@ -8,18 +8,19 @@ import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.model.Attraction;
+import tourGuide.model.Location;
+import tourGuide.model.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
 import tourGuide.dto.RecentLocationDto;
 import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
+import tourGuide.proxy.GpsUtilProxy;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
 
@@ -29,17 +30,19 @@ import tripPricer.TripPricer;
 public class TourGuideService {
 
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
+	@Autowired
+	private GpsUtilProxy gpsUtilProxy;
+
 	/** Service test configuration.
 	 */
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService) {
 
-		this.gpsUtil = gpsUtil;
+		this.gpsUtilProxy = gpsUtilProxy;
 		this.rewardsService = rewardsService;
 		
 		if(testMode) {
@@ -128,7 +131,7 @@ public class TourGuideService {
 	 */
 	public VisitedLocation trackUserLocation(User user) {
 
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(user.getUserId());
 		user.addToVisitedLocation(visitedLocation);
 		rewardsService.calculateRewards(user);
 
@@ -141,7 +144,7 @@ public class TourGuideService {
 	 */
 	public List<NearAttractionDto> getNearByAttractions(VisitedLocation visitedLocation) {
 
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		List<Attraction> attractions = gpsUtilProxy.getAttractions();
 		User user = getUserById(visitedLocation.userId);
 		List<NearAttractionDto> nearbyAttractions = new ArrayList<>();
 		NearAttractionDto nearAttraction = new NearAttractionDto();
