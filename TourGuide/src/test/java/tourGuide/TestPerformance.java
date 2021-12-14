@@ -6,22 +6,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import org.springframework.beans.factory.annotation.Autowired;
 import rewardCentral.RewardCentral;
-import tourGuide.config.InternalTestHelper;
+import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 
 public class TestPerformance {
+
+	@Autowired
+	GpsUtilProxy gpsUtilProxy;
 	
 	/*
 	 * A note on performance improvements:
@@ -50,9 +52,8 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		//=== SERVICES ===
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TEST SUBJECTS ===
@@ -81,16 +82,15 @@ public class TestPerformance {
 	public void highVolumeGetRewards() {
 
 		//=== SERVICES ===
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TIMER START===
 		stopWatch.start();
 
 		//=== TEST SUBJECTS ===
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-	    Attraction attraction = gpsUtil.getAttractions().get(0);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+	    Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		List<User> allUsers = tourGuideService.getAllUsers();
 		// Add a visited location for each user
 		allUsers.forEach(u -> u.addToVisitedLocation(new VisitedLocation(u.getUserId(), attraction, new Date())));

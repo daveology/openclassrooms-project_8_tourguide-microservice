@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Attraction;
@@ -29,11 +30,13 @@ import tripPricer.TripPricer;
 public class TourGuideService {
 
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
-	private final GpsUtilProxy gpsUtilProxy;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
+
+	@Autowired
+	private final GpsUtilProxy gpsUtilProxy;
 
 	/** Service test configuration.
 	 */
