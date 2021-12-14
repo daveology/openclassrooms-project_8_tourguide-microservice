@@ -106,10 +106,11 @@ public class TestPerformance {
 		allUsers.forEach(u -> u.addToVisitedLocation(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
 		// Add asynchronously rewards to the users for their visited locations
-		CompletableFuture<?>[] calculateFutureRewards =
-				allUsers.stream()
-				.map(rewardsService::calculateRewards)
-				.toArray(CompletableFuture[]::new);
+		CompletableFuture<?>[] calculateFutureRewards = new
+				CompletableFuture<?>[allUsers.size()];
+		for (int i = 0; i<allUsers.size(); i++) {
+			calculateFutureRewards[i] = rewardsService.calculateRewards(allUsers.get(i));
+		}
 		CompletableFuture.allOf(calculateFutureRewards).join();
 
 		// Test if each user received the rewards

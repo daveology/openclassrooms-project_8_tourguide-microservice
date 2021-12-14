@@ -59,9 +59,12 @@ public class Tracker extends Thread {
 			stopWatch.start();
 
 			// Tracks asynchronously each user's location
-			CompletableFuture<?>[] trackFutureUserLocations = users.stream()
-					.map(tourGuideService::trackUserLocation)
-					.toArray(CompletableFuture[]::new);
+			CompletableFuture<?>[] trackFutureUserLocations = new
+					CompletableFuture<?>[users.size()];
+			for (int i = 0; i<users.size(); i++) {
+				VisitedLocation visitedLocation = tourGuideService.trackUserLocation(users.get(i));
+				trackFutureUserLocations[i] = CompletableFuture.supplyAsync(() -> visitedLocation);
+			}
 			CompletableFuture.allOf(trackFutureUserLocations).join();
 
 			stopWatch.stop();
