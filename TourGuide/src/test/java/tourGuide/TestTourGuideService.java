@@ -12,15 +12,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
-import tourGuide.config.TourGuideModule;
 import tourGuide.dto.NearAttractionDto;
-import tourGuide.dto.RecentLocationDto;
 import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -34,6 +31,10 @@ public class TestTourGuideService {
 	private final GpsUtilProxy gpsUtilProxy;
 
 	private Logger logger = LogManager.getLogger(TestTourGuideService.class);
+
+	public TestTourGuideService(GpsUtilProxy gpsUtilProxy) {
+		this.gpsUtilProxy = gpsUtilProxy;
+	}
 
 	@Test
 	public void getUserLocation() {

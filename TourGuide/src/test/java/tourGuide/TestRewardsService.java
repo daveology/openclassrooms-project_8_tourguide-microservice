@@ -8,11 +8,12 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.proxy.GpsUtilProxy;
@@ -26,6 +27,10 @@ public class TestRewardsService {
 
 	@Autowired
 	private final GpsUtilProxy gpsUtilProxy;
+
+	public TestRewardsService(GpsUtilProxy gpsUtilProxy) {
+		this.gpsUtilProxy = gpsUtilProxy;
+	}
 
 	@Test
 	public void userGetRewards() {
