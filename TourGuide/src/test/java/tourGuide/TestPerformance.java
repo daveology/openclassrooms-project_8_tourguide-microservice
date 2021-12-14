@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 
-import gpsUtil.location.Attraction;
+import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

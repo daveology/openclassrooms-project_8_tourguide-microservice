@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.location.Attraction;
+import tourGuide.model.Attraction;
 import tourGuide.model.Location;
 import tourGuide.model.VisitedLocation;
 import rewardCentral.RewardCentral;
