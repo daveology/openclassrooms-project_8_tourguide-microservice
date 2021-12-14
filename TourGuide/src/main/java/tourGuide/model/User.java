@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import gpsUtil.location.VisitedLocation;
+import tourGuide.model.VisitedLocation;
 import tripPricer.Provider;
 
 /** Represents the model.

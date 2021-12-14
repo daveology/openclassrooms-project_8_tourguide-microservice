@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Attraction;
 import tourGuide.model.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.model.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
 import tourGuide.dto.RecentLocationDto;

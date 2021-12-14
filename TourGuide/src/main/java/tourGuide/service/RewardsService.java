@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Attraction;
 import tourGuide.model.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.model.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
