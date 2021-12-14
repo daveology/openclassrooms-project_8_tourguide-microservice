@@ -7,6 +7,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.TourGuideService;
 
 public class Tracker extends Thread {
@@ -14,6 +15,7 @@ public class Tracker extends Thread {
 	private Logger logger = LogManager.getLogger(Tracker.class);
 	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private GpsUtilProxy gpsUtilProxy;
 	private final TourGuideService tourGuideService;
 	private boolean stop = false;
 
@@ -22,6 +24,7 @@ public class Tracker extends Thread {
 	 */
 	public Tracker(TourGuideService tourGuideService) {
 
+		this.gpsUtilProxy = gpsUtilProxy;
 		this.tourGuideService = tourGuideService;
 		executorService.submit(this);
 	}
@@ -56,9 +59,12 @@ public class Tracker extends Thread {
 			stopWatch.start();
 
 			// Tracks asynchronously each user's location
-			CompletableFuture<?>[] trackFutureUserLocations = users.stream()
-					.map(tourGuideService::trackUserLocation)
-					.toArray(CompletableFuture[]::new);
+			CompletableFuture<?>[] trackFutureUserLocations = new
+					CompletableFuture<?>[users.size()];
+			for (int i = 0; i<users.size(); i++) {
+				VisitedLocation visitedLocation = tourGuideService.trackUserLocation(users.get(i));
+				trackFutureUserLocations[i] = CompletableFuture.supplyAsync(() -> visitedLocation);
+			}
 			CompletableFuture.allOf(trackFutureUserLocations).join();
 
 			stopWatch.stop();

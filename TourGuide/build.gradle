@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.5.2")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.6.1")
     }
 }
 
@@ -16,7 +16,7 @@ apply plugin: "jacoco"
 
 bootJar {
     baseName = 'tourGuide'
-    version =  '0.0.5'
+    version =  '0.1.0'
 }
 
 repositories {
@@ -32,11 +32,11 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.0'
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.javamoney', name: 'moneta', version: '1.4.2'
 	compile group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
 	
-    compile(name:'gpsUtil', ext:'jar')
     compile(name:'RewardCentral', ext:'jar')
     compile(name:'TripPricer', ext:'jar')
     

@@ -6,22 +6,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
+import tourGuide.model.Attraction;
+import tourGuide.model.VisitedLocation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
-import tourGuide.config.InternalTestHelper;
+import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TestPerformance {
+
+	private Logger logger = LogManager.getLogger(RewardsService.class);
+
+	@Autowired
+	GpsUtilProxy gpsUtilProxy;
 	
 	/*
 	 * A note on performance improvements:
@@ -50,9 +61,8 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		//=== SERVICES ===
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TEST SUBJECTS ===
@@ -81,25 +91,26 @@ public class TestPerformance {
 	public void highVolumeGetRewards() {
 
 		//=== SERVICES ===
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TIMER START===
 		stopWatch.start();
 
 		//=== TEST SUBJECTS ===
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-	    Attraction attraction = gpsUtil.getAttractions().get(0);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		logger.debug("RESULT: " + gpsUtilProxy.getAttractions().get(0));
+	    Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		List<User> allUsers = tourGuideService.getAllUsers();
 		// Add a visited location for each user
 		allUsers.forEach(u -> u.addToVisitedLocation(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
 		// Add asynchronously rewards to the users for their visited locations
-		CompletableFuture<?>[] calculateFutureRewards =
-				allUsers.stream()
-				.map(rewardsService::calculateRewards)
-				.toArray(CompletableFuture[]::new);
+		CompletableFuture<?>[] calculateFutureRewards = new
+				CompletableFuture<?>[allUsers.size()];
+		for (int i = 0; i<allUsers.size(); i++) {
+			calculateFutureRewards[i] = rewardsService.calculateRewards(allUsers.get(i));
+		}
 		CompletableFuture.allOf(calculateFutureRewards).join();
 
 		// Test if each user received the rewards
