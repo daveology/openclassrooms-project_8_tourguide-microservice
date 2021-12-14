@@ -1,6 +1,6 @@
 package tourGuide.dto;
 
-import gpsUtil.location.Location;
+import tourGuide.model.Location;
 
 import java.util.List;
 import java.util.UUID;

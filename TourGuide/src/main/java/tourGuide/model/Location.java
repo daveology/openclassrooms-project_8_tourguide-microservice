@@ -1,6 +1,7 @@
 package tourGuide.model;
 
 public class Location {
+
     public final double longitude;
     public final double latitude;
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
+import tourGuide.model.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.dto.NearAttractionDto;
