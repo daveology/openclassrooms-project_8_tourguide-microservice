@@ -12,6 +12,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import rewardCentral.RewardCentral;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.proxy.GpsUtilProxy;
@@ -20,6 +21,7 @@ import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 
+@SpringBootTest
 public class TestRewardsService {
 
 	@Autowired
