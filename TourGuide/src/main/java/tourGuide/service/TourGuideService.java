@@ -36,7 +36,7 @@ public class TourGuideService {
 	boolean testMode = true;
 
 	@Autowired
-	private final GpsUtilProxy gpsUtilProxy;
+	private GpsUtilProxy gpsUtilProxy;
 
 	/** Service test configuration.
 	 */

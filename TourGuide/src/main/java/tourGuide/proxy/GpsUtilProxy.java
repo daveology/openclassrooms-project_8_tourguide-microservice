@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "GpsUtil", url = ":localhost:7911")
+@FeignClient(name = "GpsUtil", url = "localhost:7911")
 public interface GpsUtilProxy {
 
     @GetMapping(value="/attractions")

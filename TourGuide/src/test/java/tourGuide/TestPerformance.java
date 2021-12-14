@@ -9,8 +9,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +25,11 @@ import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestPerformance {
+
+	private Logger logger = LogManager.getLogger(RewardsService.class);
 
 	@Autowired
 	GpsUtilProxy gpsUtilProxy;
@@ -92,6 +99,7 @@ public class TestPerformance {
 
 		//=== TEST SUBJECTS ===
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		logger.debug("RESULT: " + gpsUtilProxy.getAttractions().get(0));
 	    Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		List<User> allUsers = tourGuideService.getAllUsers();
 		// Add a visited location for each user
