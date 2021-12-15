@@ -10,5 +10,5 @@ import java.util.UUID;
 public interface RewardCentralProxy {
 
     @GetMapping(value="/attractionRewardsPoints")
-    Integer getAttractionRewardPoints(@RequestParam("userUuid") UUID userId, @RequestParam("attractionUuid") UUID attractionId);
+    Integer getAttractionRewardPoints(@RequestParam("userUuid") UUID userUuid, @RequestParam("attractionUuid") UUID attractionUuid);
 }
