@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import tourGuide.model.Attraction;
 import tourGuide.model.Location;
 import tourGuide.model.VisitedLocation;
-import rewardCentral.RewardCentral;
+import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.proxy.GpsUtilProxy;
@@ -28,15 +28,16 @@ public class RewardsService {
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
-	private final RewardCentral rewardsCentral;
 
 	@Autowired
 	private final GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	private final RewardCentralProxy rewardsCentralProxy;
 
-	public RewardsService(GpsUtilProxy gpsUtilProxy, RewardCentral rewardCentral) {
+	public RewardsService(GpsUtilProxy gpsUtilProxy, RewardCentralProxy rewardsCentralProxy) {
 
 		this.gpsUtilProxy = gpsUtilProxy;
-		this.rewardsCentral = rewardCentral;
+		this.rewardsCentralProxy = rewardsCentralProxy;
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -95,7 +96,7 @@ public class RewardsService {
 
 	public int getRewardPoints(Attraction attraction, User user) {
 
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		return rewardsCentralProxy.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 
 	/** Calculate the distance in miles.

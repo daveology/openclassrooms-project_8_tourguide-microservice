@@ -12,7 +12,7 @@ import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import rewardCentral.RewardCentral;
+import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
@@ -25,6 +25,8 @@ public class TestRewardsService {
 
 	@Autowired
 	private final GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	private RewardCentralProxy rewardCentralProxy;
 
 	public TestRewardsService(GpsUtilProxy gpsUtilProxy) {
 		this.gpsUtilProxy = gpsUtilProxy;
@@ -32,7 +34,7 @@ public class TestRewardsService {
 
 	@Test
 	public void userGetRewards() {
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
@@ -48,7 +50,7 @@ public class TestRewardsService {
 	
 	@Test
 	public void isWithinAttractionProximity() {
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
@@ -56,7 +58,7 @@ public class TestRewardsService {
 	// Needs fixed - can throw ConcurrentModificationException
 	@Test
 	public void nearAllAttractions() {
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);

@@ -19,7 +19,7 @@ import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import rewardCentral.RewardCentral;
+import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -33,6 +33,8 @@ public class TestPerformance {
 
 	@Autowired
 	GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	RewardCentralProxy rewardCentralProxy;
 	
 	/*
 	 * A note on performance improvements:
@@ -61,7 +63,7 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		//=== SERVICES ===
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		StopWatch stopWatch = new StopWatch();
 
@@ -91,7 +93,7 @@ public class TestPerformance {
 	public void highVolumeGetRewards() {
 
 		//=== SERVICES ===
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TIMER START===
