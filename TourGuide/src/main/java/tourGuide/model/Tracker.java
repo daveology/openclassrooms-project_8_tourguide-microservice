@@ -62,8 +62,8 @@ public class Tracker extends Thread {
 			CompletableFuture<?>[] trackFutureUserLocations = new
 					CompletableFuture<?>[users.size()];
 			for (int i = 0; i<users.size(); i++) {
-				VisitedLocation visitedLocation = tourGuideService.trackUserLocation(users.get(i));
-				trackFutureUserLocations[i] = CompletableFuture.supplyAsync(() -> visitedLocation);
+				int o = i;
+				trackFutureUserLocations[i] = CompletableFuture.runAsync(() -> tourGuideService.trackUserLocation(users.get(o)));
 			}
 			CompletableFuture.allOf(trackFutureUserLocations).join();
 

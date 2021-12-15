@@ -45,9 +45,9 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		tourGuideService.trackUserLocation(user);
 		tourGuideService.tracker.stopTracking();
-		assertTrue(visitedLocation.userId.equals(user.getUserId()));
+		assertTrue(user.getVisitedLocations().get(0).userId.equals(user.getUserId()));
 	}
 	
 	@Test
@@ -98,11 +98,11 @@ public class TestTourGuideService {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		tourGuideService.trackUserLocation(user);
 		
 		tourGuideService.tracker.stopTracking();
 		
-		assertEquals(user.getUserId(), visitedLocation.userId);
+		assertEquals(user.getUserId(), user.getVisitedLocations().get(user.getVisitedLocations().size()-1).userId);
 	}
 	
 	@Test
@@ -113,9 +113,9 @@ public class TestTourGuideService {
 		Random rand = new Random();
 
 		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+		tourGuideService.trackUserLocation(user);
 		
-		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(tourGuideService.getUserLocation(tourGuideService.getUser("internalUser99")));
 		
 		tourGuideService.tracker.stopTracking();
 		

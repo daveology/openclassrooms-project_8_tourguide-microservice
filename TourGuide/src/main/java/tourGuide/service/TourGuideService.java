@@ -3,6 +3,10 @@ package tourGuide.service;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -29,6 +33,7 @@ import tourGuide.proxy.TripPricerProxy;
 @Service
 public class TourGuideService {
 
+	private final ExecutorService executor = Executors.newFixedThreadPool(100);
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
 	private final RewardsService rewardsService;
 	public final Tracker tracker;
@@ -71,11 +76,9 @@ public class TourGuideService {
 	 */
 	public VisitedLocation getUserLocation(User user) {
 
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocation(user);
+		if (user.getVisitedLocations().size() == 0) { trackUserLocation(user); }
 
-		return visitedLocation;
+		return user.getLastVisitedLocation();
 	}
 
 	/** User.
@@ -130,13 +133,13 @@ public class TourGuideService {
 	 * @param user User object.
 	 * @return Return model's location.
 	 */
-	public VisitedLocation trackUserLocation(User user) {
+	public void trackUserLocation(User user) {
 
-		VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(user.getUserId());
-		user.addToVisitedLocation(visitedLocation);
-		rewardsService.calculateRewards(user);
-
-		return visitedLocation;
+		CompletableFuture.supplyAsync(() -> gpsUtilProxy.getUserLocation(user.getUserId()), executor)
+				.thenAccept(visitedLocation -> {
+					user.addToVisitedLocation(visitedLocation);
+					rewardsService.calculateRewards(user);
+				});
 	}
 
 	/** User's closest attractions.
@@ -233,7 +236,7 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 100000).forEach(i -> {
+		IntStream.range(0, 1000).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
