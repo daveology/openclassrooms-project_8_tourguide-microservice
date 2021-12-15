@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +75,13 @@ public class TestPerformance {
 		//=== TIMER START===
 
 		stopWatch.start();
-		allUsers.forEach(user -> tourGuideService.trackUserLocation(user));
+
+		CompletableFuture<?>[] calculateFutureLocations = new
+				CompletableFuture<?>[allUsers.size()];
+		for (int i = 0; i<allUsers.size(); i++) {
+			calculateFutureLocations[i] = tourGuideService.trackUserLocation(allUsers.get(i));
+		}
+		CompletableFuture.allOf(calculateFutureLocations).join();
 
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();

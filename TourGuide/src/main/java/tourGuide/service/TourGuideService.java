@@ -133,9 +133,9 @@ public class TourGuideService {
 	 * @param user User object.
 	 * @return Return model's location.
 	 */
-	public void trackUserLocation(User user) {
+	public CompletableFuture<?> trackUserLocation(User user) {
 
-		CompletableFuture.supplyAsync(() -> gpsUtilProxy.getUserLocation(user.getUserId()), executor)
+		 return CompletableFuture.supplyAsync(() -> gpsUtilProxy.getUserLocation(user.getUserId()), executor)
 				.thenAccept(visitedLocation -> {
 					user.addToVisitedLocation(visitedLocation);
 					rewardsService.calculateRewards(user);
@@ -236,7 +236,7 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 1000).forEach(i -> {
+		IntStream.range(0, 100000).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
