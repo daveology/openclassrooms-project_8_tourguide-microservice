@@ -22,7 +22,7 @@ import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
-import tripPricer.Provider;
+import tourGuide.model.Provider;
 
 @SpringBootTest
 public class TestTourGuideService {

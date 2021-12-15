@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import tourGuide.model.VisitedLocation;
-import tripPricer.Provider;
+import tourGuide.model.Provider;
 
 /** Represents the model.
  */

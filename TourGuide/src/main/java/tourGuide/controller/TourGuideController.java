@@ -16,7 +16,7 @@ import tourGuide.model.VisitedLocation;
 import tourGuide.dto.RecentLocationDto;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
-import tripPricer.Provider;
+import tourGuide.model.Provider;
 
 /** Responsible for processing tourguide and reward services.
  */

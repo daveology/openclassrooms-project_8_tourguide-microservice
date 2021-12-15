@@ -21,8 +21,7 @@ import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.proxy.GpsUtilProxy;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
+import tourGuide.model.Provider;
 
 /** Provides the TourGuide functionalities.
  */
