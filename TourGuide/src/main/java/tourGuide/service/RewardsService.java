@@ -55,12 +55,12 @@ public class RewardsService {
 	 */
 	public CompletableFuture<?> calculateRewards(User user) {
 
+		return CompletableFuture.runAsync(() -> {
 		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<>();
 		attractionsList.addAll(gpsUtilProxy.getAttractions());
 		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<>();
 		userVisitedLocations.addAll(user.getVisitedLocations());
 
-		return CompletableFuture.runAsync(() -> {
 			userVisitedLocations.stream().forEach(visitedLocation -> {
 					attractionsList.stream()
 							.filter(attraction -> nearAttraction(visitedLocation, attraction))
