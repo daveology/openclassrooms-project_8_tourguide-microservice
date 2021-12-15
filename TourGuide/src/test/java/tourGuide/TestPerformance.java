@@ -29,7 +29,7 @@ import tourGuide.model.User;
 @SpringBootTest
 public class TestPerformance {
 
-	private Logger logger = LogManager.getLogger(RewardsService.class);
+	private final Logger logger = LogManager.getLogger(RewardsService.class);
 
 	@Autowired
 	GpsUtilProxy gpsUtilProxy;
