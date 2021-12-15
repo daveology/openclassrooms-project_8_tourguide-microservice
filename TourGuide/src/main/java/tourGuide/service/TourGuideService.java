@@ -22,6 +22,7 @@ import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.model.Provider;
+import tourGuide.proxy.TripPricerProxy;
 
 /** Provides the TourGuide functionalities.
  */
@@ -30,12 +31,13 @@ public class TourGuideService {
 
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	@Autowired
 	private GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	private TripPricerProxy tripPricerProxy;
 
 	/** Service test configuration.
 	 */
@@ -117,7 +119,7 @@ public class TourGuideService {
 	public List<Provider> getTripDeals(User user) {
 
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
 		user.setTripDeals(providers);
 
