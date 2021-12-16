@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="src/main/resources/static/logo.png" alt="logo" width="116" height="120" />
+    <img src="TourGuide/src/main/resources/static/logo.png" alt="logo" width="116" height="120" />
     <h3 align="center">TourGuide API<i></i></h3>
     <p align="center">
         Changez votre manière de voyager !
@@ -38,7 +38,7 @@ TourGuide is a Spring Boot application that has been a centerpiece in TripMaster
 <p id="acknowledgements"></p>
 
 <div align="center">
-    <img src="src/main/resources/static/header.png" alt="header" />
+    <img src="TourGuide/src/main/resources/static/header.png" alt="header" />
 </div>
 
 <!-- ACKNOWLEDGEMENTS -->
