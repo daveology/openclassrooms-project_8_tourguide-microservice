@@ -120,11 +120,13 @@ public class TourGuideService {
 	 * @param user User object.
 	 * @return Return model's trip deals.
 	 */
-	public List<Provider> getTripDeals(User user) {
+	public List<Provider> getTripDeals(User user, UUID attractionUuid) {
 
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		user = getUser(user.getUserName());
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, attractionUuid, user.getUserPreferences().getNumberOfAdults(),
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
+
 		user.setTripDeals(providers);
 
 		return providers;

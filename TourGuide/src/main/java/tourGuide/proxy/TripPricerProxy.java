@@ -11,7 +11,7 @@ import java.util.UUID;
 @FeignClient(name = "TripPricer", url = "localhost:7933")
 public interface TripPricerProxy {
 
-    @GetMapping(value="/getPrice")
+    @GetMapping(value="/getTripPrice")
     List<Provider> getPrice(@RequestParam String key,
                                    @RequestParam ("attractionUuid") UUID attractionUuid,
                                    @RequestParam ("adultsCount") int adultsCount,

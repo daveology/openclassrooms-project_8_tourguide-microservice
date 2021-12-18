@@ -85,9 +85,9 @@ public class TourGuideController {
      * @return Return the model's trip deals.
      */
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public String getTripDeals(@RequestParam String userName, @RequestParam UUID attractionUuid) {
 
-    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName), attractionUuid);
 
     	return JsonStream.serialize(providers);
     }

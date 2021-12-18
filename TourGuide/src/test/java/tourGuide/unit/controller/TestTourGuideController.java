@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.service.TourGuideService;
 
+import java.util.UUID;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -68,5 +70,14 @@ public class TestTourGuideController {
         mock.perform(get("/getAllCurrentLocations").param("userName", "internalUser0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(1)));
+    }
+
+    @Test
+    public void shouldAccessUserTripDeals() throws Exception {
+
+        InternalTestHelper.setInternalUserNumber(1);
+        mock.perform(get("/getTripDeals").param("userName", "internalUser0").param("attractionUuid", String.valueOf(UUID.randomUUID())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(5)));
     }
 }
