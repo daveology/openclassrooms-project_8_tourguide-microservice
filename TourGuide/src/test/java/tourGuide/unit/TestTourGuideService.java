@@ -105,19 +105,17 @@ public class TestTourGuideService {
 	}
 	
 	@Test
-	public void getNearbyAttractions() {
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
-		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
-		Random rand = new Random();
+	public void shouldGetNearbyAttractions() {
 
-		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
-		tourGuideService.trackUserLocation(user);
-		
-		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(tourGuideService.getUserLocation(tourGuideService.getUser("internalUser99")));
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
+		InternalTestHelper.setInternalUserNumber(1);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+
+		User user = tourGuideService.getAllUsers().get(0);
+		tourGuideService.trackUserLocation(user).join();
+		List<NearAttractionDto> attractions = tourGuideService.getNearByAttractions(tourGuideService.getUserLocation(user));
 		
 		tourGuideService.tracker.stopTracking();
-		
 		assertEquals(5, attractions.size());
 	}
 
