@@ -60,4 +60,13 @@ public class TestTourGuideController {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(0)));
     }
+
+    @Test
+    public void shouldAccessUserRecentLocations() throws Exception {
+
+        InternalTestHelper.setInternalUserNumber(1);
+        mock.perform(get("/getAllCurrentLocations").param("userName", "internalUser0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(1)));
+    }
 }
