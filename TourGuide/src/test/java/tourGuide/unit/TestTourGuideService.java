@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 import tourGuide.model.Location;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,28 +26,27 @@ import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 import tourGuide.model.Provider;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestTourGuideService {
 
 	@Autowired
-	private final GpsUtilProxy gpsUtilProxy;
+	GpsUtilProxy gpsUtilProxy;
 	@Autowired
-	private RewardCentralProxy rewardCentralProxy;
+	RewardCentralProxy rewardCentralProxy;
 
-	private Logger logger = LogManager.getLogger(TestTourGuideService.class);
-
-	public TestTourGuideService(GpsUtilProxy gpsUtilProxy) {
-		this.gpsUtilProxy = gpsUtilProxy;
-	}
+	private final Logger logger = LogManager.getLogger(TestTourGuideService.class);
 
 	@Test
-	public void getUserLocation() {
+	public void shouldGetUserLocation() {
+
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
-		InternalTestHelper.setInternalUserNumber(0);
+		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+		User user = tourGuideService.getAllUsers().get(0);
 		tourGuideService.trackUserLocation(user);
+
 		tourGuideService.tracker.stopTracking();
 		assertTrue(user.getVisitedLocations().get(0).userId.equals(user.getUserId()));
 	}
