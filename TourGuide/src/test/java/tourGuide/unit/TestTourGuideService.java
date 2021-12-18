@@ -149,17 +149,16 @@ public class TestTourGuideService {
 		assertEquals(6, recentLocations.size());
 	}
 	
-	public void getTripDeals() {
+	public void shouldGetTripDeals() {
+
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-
 		List<Provider> providers = tourGuideService.getTripDeals(user);
 		
 		tourGuideService.tracker.stopTracking();
-		
 		assertEquals(10, providers.size());
 	}
 }

@@ -31,13 +31,13 @@ import tourGuide.model.User;
 @SpringBootTest
 public class TestPerformance {
 
-	private final Logger logger = LogManager.getLogger(TestPerformance.class);
-
 	@Autowired
 	GpsUtilProxy gpsUtilProxy;
 	@Autowired
 	RewardCentralProxy rewardCentralProxy;
-	
+
+	private final Logger logger = LogManager.getLogger(TestPerformance.class);
+
 	/*
 	 * A note on performance improvements:
 	 *     
