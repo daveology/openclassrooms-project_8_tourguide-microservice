@@ -123,11 +123,12 @@ public class TestTourGuideService {
 	public void shouldGetAllRecentLocations() {
 
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
+		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
-		Random rand = new Random();
-		User user = tourGuideService.getUser("internalUser" + rand.nextInt(99));
+
+		User user = tourGuideService.getAllUsers().get(0);
 		List<VisitedLocation> locations = new ArrayList<>();
-		user.setVisitedLocations(new ArrayList<>());
+		user.clearVisitedLocations();
 
 		for (int i = 1 ; i < 10 ; i++) {
 			locations.add(new VisitedLocation(user.getUserId(), new Location(99,99),
