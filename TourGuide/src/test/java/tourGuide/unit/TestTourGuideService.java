@@ -91,16 +91,16 @@ public class TestTourGuideService {
 	}
 	
 	@Test
-	public void trackUser() {
+	public void shouldTrackUser() {
+
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		tourGuideService.trackUserLocation(user);
+		tourGuideService.trackUserLocation(user).join();
 		
 		tourGuideService.tracker.stopTracking();
-		
 		assertEquals(user.getUserId(), user.getVisitedLocations().get(user.getVisitedLocations().size()-1).userId);
 	}
 	
