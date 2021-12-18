@@ -232,7 +232,7 @@ public class TourGuideService {
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
+	public final Map<String, User> internalUserMap = new HashMap<>();
 
 	/** Users testing initializer.
 	 */
@@ -253,7 +253,7 @@ public class TourGuideService {
 	/** User's location history generator.
 	 * @param user User object.
 	 */
-	private void generateUserLocationHistory(User user) {
+	public void generateUserLocationHistory(User user) {
 
 		IntStream.range(0, 3).forEach(i-> {
 			user.addToVisitedLocation(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
