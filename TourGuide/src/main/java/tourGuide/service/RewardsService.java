@@ -23,7 +23,7 @@ public class RewardsService {
 
 	private Logger logger = LogManager.getLogger(RewardsService.class);
 
-	private final ExecutorService executor = Executors.newFixedThreadPool(100);
+	private final ExecutorService executor = Executors.newFixedThreadPool(50);
 
 	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 	// proximity in miles

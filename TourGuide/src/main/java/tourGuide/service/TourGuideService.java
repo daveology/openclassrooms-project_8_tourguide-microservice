@@ -33,7 +33,7 @@ import tourGuide.proxy.TripPricerProxy;
 @Service
 public class TourGuideService {
 
-	private final ExecutorService executor = Executors.newFixedThreadPool(100);
+	private final ExecutorService executor = Executors.newFixedThreadPool(50);
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
 	private final RewardsService rewardsService;
 	public final Tracker tracker;
@@ -236,7 +236,7 @@ public class TourGuideService {
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 100000).forEach(i -> {
+		IntStream.range(0, 100).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
