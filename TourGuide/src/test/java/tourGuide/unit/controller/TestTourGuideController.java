@@ -11,9 +11,9 @@ import tourGuide.config.InternalTestHelper;
 import tourGuide.service.TourGuideService;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,5 +41,14 @@ public class TestTourGuideController {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("longitude")))
                 .andExpect(content().string(containsString("latitude")));
+    }
+
+    @Test
+    public void shouldAccessNearbyAttractions() throws Exception {
+
+        InternalTestHelper.setInternalUserNumber(1);
+        mock.perform(get("/getNearbyAttractions").param("userName", "internalUser0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(5)));
     }
 }
