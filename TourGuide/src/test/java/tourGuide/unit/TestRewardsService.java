@@ -4,10 +4,11 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,32 +21,30 @@ import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class TestRewardsService {
 
 	@Autowired
-	private final GpsUtilProxy gpsUtilProxy;
+	GpsUtilProxy gpsUtilProxy;
 	@Autowired
-	private RewardCentralProxy rewardCentralProxy;
-
-	public TestRewardsService(GpsUtilProxy gpsUtilProxy) {
-		this.gpsUtilProxy = gpsUtilProxy;
-	}
+	RewardCentralProxy rewardCentralProxy;
 
 	@Test
-	public void userGetRewards() {
-		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
+	public void shouldGetUserRewards() {
 
-		InternalTestHelper.setInternalUserNumber(0);
+		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
+		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+		User user = tourGuideService.getUser("internalUser0");
 		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		user.addToVisitedLocation(new VisitedLocation(user.getUserId(), attraction, new Date()));
-		tourGuideService.trackUserLocation(user);
+		rewardsService.calculateRewards(user).join();
+
 		List<UserReward> userRewards = user.getUserRewards();
 		tourGuideService.tracker.stopTracking();
-		assertTrue(userRewards.size() == 1);
+		assertEquals(1, userRewards.size());
 	}
 	
 	@Test
