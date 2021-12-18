@@ -67,9 +67,10 @@ public class TestTourGuideController {
     public void shouldAccessUserRecentLocations() throws Exception {
 
         InternalTestHelper.setInternalUserNumber(1);
-        mock.perform(get("/getAllCurrentLocations").param("userName", "internalUser0"))
+        mock.perform(get("/getAllCurrentLocations").param("userName", "internalUser1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(1)));
+                .andExpect(content().string(containsString("longitude")))
+                .andExpect(content().string(containsString("latitude")));
     }
 
     @Test
