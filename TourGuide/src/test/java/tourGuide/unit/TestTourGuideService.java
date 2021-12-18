@@ -52,24 +52,24 @@ public class TestTourGuideService {
 	}
 	
 	@Test
-	public void addUser() {
+	public void shouldAddUser() {
+
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
+		User firstUser = new User(UUID.randomUUID(), "johndoe", "000", "johndoe@tourGuide.com");
+		User secondUser = new User(UUID.randomUUID(), "harrypotter", "000", "harrypotter@tourGuide.com");
 
-		tourGuideService.addUser(user);
-		tourGuideService.addUser(user2);
+		tourGuideService.addUser(firstUser);
+		tourGuideService.addUser(secondUser);
 		
-		User retrivedUser = tourGuideService.getUser(user.getUserName());
-		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
+		User retriedFirstUser = tourGuideService.getUser(firstUser.getUserName());
+		User retriedSecondUser = tourGuideService.getUser(secondUser.getUserName());
 
 		tourGuideService.tracker.stopTracking();
-		
-		assertEquals(user, retrivedUser);
-		assertEquals(user2, retrivedUser2);
+		assertEquals(firstUser, retriedFirstUser);
+		assertEquals(secondUser, retriedSecondUser);
 	}
 	
 	@Test
