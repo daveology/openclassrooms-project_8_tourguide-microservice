@@ -51,4 +51,13 @@ public class TestTourGuideController {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(5)));
     }
+
+    @Test
+    public void shouldAccessUserRewards() throws Exception {
+
+        InternalTestHelper.setInternalUserNumber(1);
+        mock.perform(get("/getRewards").param("userName", "internalUser0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(0)));
+    }
 }
