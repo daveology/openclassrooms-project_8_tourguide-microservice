@@ -54,7 +54,6 @@ public class TestRewardsService {
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 	
-	// Needs fixed - can throw ConcurrentModificationException
 	@Test
 	public void nearAllAttractions() {
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
