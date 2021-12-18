@@ -73,21 +73,19 @@ public class TestTourGuideService {
 	}
 	
 	@Test
-	public void getAllUsers() {
+	public void shouldGetAllUsers() {
+
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
 		tourGuideService.addUser(user);
 		tourGuideService.addUser(user2);
-		
 		List<User> allUsers = tourGuideService.getAllUsers();
 
 		tourGuideService.tracker.stopTracking();
-		
 		assertTrue(allUsers.contains(user));
 		assertTrue(allUsers.contains(user2));
 	}
