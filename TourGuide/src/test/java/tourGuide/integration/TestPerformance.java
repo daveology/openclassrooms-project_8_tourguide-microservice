@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StopWatch;
+import tourGuide.config.InternalTestHelper;
 import tourGuide.model.Attraction;
 import tourGuide.model.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,7 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		//=== SERVICES ===
+		InternalTestHelper.setInternalUserNumber(100);
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
 		StopWatch stopWatch = new StopWatch();
@@ -100,6 +102,7 @@ public class TestPerformance {
 	public void highVolumeGetRewards() {
 
 		//=== SERVICES ===
+		InternalTestHelper.setInternalUserNumber(100);
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		StopWatch stopWatch = new StopWatch();
 
