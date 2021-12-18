@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.proxy.GpsUtilProxy;
+import tourGuide.proxy.TripPricerProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
@@ -35,6 +36,8 @@ public class TestPerformance {
 	GpsUtilProxy gpsUtilProxy;
 	@Autowired
 	RewardCentralProxy rewardCentralProxy;
+	@Autowired
+	TripPricerProxy tripPricerProxy;
 
 	private final Logger logger = LogManager.getLogger(TestPerformance.class);
 
@@ -67,7 +70,7 @@ public class TestPerformance {
 		//=== SERVICES ===
 		InternalTestHelper.setInternalUserNumber(100);
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, tripPricerProxy);
 		StopWatch stopWatch = new StopWatch();
 
 		//=== TEST SUBJECTS ===
@@ -110,7 +113,7 @@ public class TestPerformance {
 		stopWatch.start();
 
 		//=== TEST SUBJECTS ===
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, tripPricerProxy);
 		logger.debug("RESULT: " + gpsUtilProxy.getAttractions().get(0));
 	    Attraction attraction = gpsUtilProxy.getAttractions().get(0);
 		List<User> allUsers = tourGuideService.getAllUsers();

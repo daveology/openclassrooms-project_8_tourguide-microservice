@@ -46,10 +46,11 @@ public class TourGuideService {
 
 	/** Service test configuration.
 	 */
-	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService) {
+	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService, TripPricerProxy tripPricerProxy) {
 
 		this.gpsUtilProxy = gpsUtilProxy;
 		this.rewardsService = rewardsService;
+		this.tripPricerProxy = tripPricerProxy;
 		
 		if(testMode) {
 			logger.info("TestMode enabled");

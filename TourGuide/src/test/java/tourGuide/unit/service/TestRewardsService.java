@@ -1,4 +1,4 @@
-package tourGuide.unit;
+package tourGuide.unit.service;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.config.InternalTestHelper;
 import tourGuide.proxy.GpsUtilProxy;
+import tourGuide.proxy.TripPricerProxy;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
@@ -29,13 +30,15 @@ public class TestRewardsService {
 	GpsUtilProxy gpsUtilProxy;
 	@Autowired
 	RewardCentralProxy rewardCentralProxy;
+	@Autowired
+	TripPricerProxy tripPricerProxy;
 
 	@Test
 	public void shouldGetUserRewards() {
 
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		InternalTestHelper.setInternalUserNumber(1);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, tripPricerProxy);
 		
 		User user = tourGuideService.getUser("internalUser0");
 		Attraction attraction = gpsUtilProxy.getAttractions().get(0);
@@ -61,7 +64,7 @@ public class TestRewardsService {
 		RewardsService rewardsService = new RewardsService(gpsUtilProxy, rewardCentralProxy);
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 		InternalTestHelper.setInternalUserNumber(1);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilProxy, rewardsService, tripPricerProxy);
 
 		rewardsService.calculateRewards(tourGuideService.getAllUsers().get(0)).join();
 		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
