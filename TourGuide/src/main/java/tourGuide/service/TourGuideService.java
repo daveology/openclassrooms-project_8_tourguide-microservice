@@ -3,6 +3,10 @@ package tourGuide.service;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,29 +25,32 @@ import tourGuide.model.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.proxy.GpsUtilProxy;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
+import tourGuide.model.Provider;
+import tourGuide.proxy.TripPricerProxy;
 
 /** Provides the TourGuide functionalities.
  */
 @Service
 public class TourGuideService {
 
+	private final ExecutorService executor = Executors.newFixedThreadPool(50);
 	private Logger logger = LogManager.getLogger(TourGuideService.class);
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	@Autowired
 	private GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	private TripPricerProxy tripPricerProxy;
 
 	/** Service test configuration.
 	 */
-	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService) {
+	public TourGuideService(GpsUtilProxy gpsUtilProxy, RewardsService rewardsService, TripPricerProxy tripPricerProxy) {
 
 		this.gpsUtilProxy = gpsUtilProxy;
 		this.rewardsService = rewardsService;
+		this.tripPricerProxy = tripPricerProxy;
 		
 		if(testMode) {
 			logger.info("TestMode enabled");
@@ -70,11 +77,9 @@ public class TourGuideService {
 	 */
 	public VisitedLocation getUserLocation(User user) {
 
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocation(user);
+		if (user.getVisitedLocations().size() == 0) { trackUserLocation(user); }
 
-		return visitedLocation;
+		return user.getLastVisitedLocation();
 	}
 
 	/** User.
@@ -115,11 +120,13 @@ public class TourGuideService {
 	 * @param user User object.
 	 * @return Return model's trip deals.
 	 */
-	public List<Provider> getTripDeals(User user) {
+	public List<Provider> getTripDeals(User user, UUID attractionUuid) {
 
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+		user = getUser(user.getUserName());
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, attractionUuid, user.getUserPreferences().getNumberOfAdults(),
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
+
 		user.setTripDeals(providers);
 
 		return providers;
@@ -129,13 +136,13 @@ public class TourGuideService {
 	 * @param user User object.
 	 * @return Return model's location.
 	 */
-	public VisitedLocation trackUserLocation(User user) {
+	public CompletableFuture<?> trackUserLocation(User user) {
 
-		VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(user.getUserId());
-		user.addToVisitedLocation(visitedLocation);
-		rewardsService.calculateRewards(user);
-
-		return visitedLocation;
+		 return CompletableFuture.supplyAsync(() -> gpsUtilProxy.getUserLocation(user.getUserId()), executor)
+				.thenAccept(visitedLocation -> {
+					user.addToVisitedLocation(visitedLocation);
+					rewardsService.calculateRewards(user);
+				});
 	}
 
 	/** User's closest attractions.
@@ -227,12 +234,12 @@ public class TourGuideService {
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
+	public final Map<String, User> internalUserMap = new HashMap<>();
 
 	/** Users testing initializer.
 	 */
 	private void initializeInternalUsers() {
-		IntStream.range(0, 100).forEach(i -> {
+		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";
 			String email = userName + "@tourGuide.com";
@@ -248,7 +255,7 @@ public class TourGuideService {
 	/** User's location history generator.
 	 * @param user User object.
 	 */
-	private void generateUserLocationHistory(User user) {
+	public void generateUserLocationHistory(User user) {
 
 		IntStream.range(0, 3).forEach(i-> {
 			user.addToVisitedLocation(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));

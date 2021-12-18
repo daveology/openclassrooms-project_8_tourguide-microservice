@@ -16,7 +16,7 @@ apply plugin: "jacoco"
 
 bootJar {
     baseName = 'tourGuide'
-    version =  '0.1.0'
+    version =  '1.0.0'
 }
 
 repositories {
@@ -36,10 +36,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.javamoney', name: 'moneta', version: '1.4.2'
 	compile group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
-	
-    compile(name:'RewardCentral', ext:'jar')
-    compile(name:'TripPricer', ext:'jar')
-    
+
     testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.2'
 }

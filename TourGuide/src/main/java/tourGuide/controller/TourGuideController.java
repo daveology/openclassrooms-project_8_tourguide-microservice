@@ -16,7 +16,7 @@ import tourGuide.model.VisitedLocation;
 import tourGuide.dto.RecentLocationDto;
 import tourGuide.service.TourGuideService;
 import tourGuide.model.User;
-import tripPricer.Provider;
+import tourGuide.model.Provider;
 
 /** Responsible for processing tourguide and reward services.
  */
@@ -85,9 +85,9 @@ public class TourGuideController {
      * @return Return the model's trip deals.
      */
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public String getTripDeals(@RequestParam String userName, @RequestParam UUID attractionUuid) {
 
-    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName), attractionUuid);
 
     	return JsonStream.serialize(providers);
     }

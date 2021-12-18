@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import tourGuide.model.Attraction;
 import tourGuide.model.Location;
 import tourGuide.model.VisitedLocation;
-import rewardCentral.RewardCentral;
+import tourGuide.proxy.RewardCentralProxy;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
 import tourGuide.proxy.GpsUtilProxy;
@@ -23,20 +23,23 @@ public class RewardsService {
 
 	private Logger logger = LogManager.getLogger(RewardsService.class);
 
+	private final ExecutorService executor = Executors.newFixedThreadPool(50);
+
 	private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 	// proximity in miles
     private int defaultProximityBuffer = 10;
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
-	private final RewardCentral rewardsCentral;
 
 	@Autowired
 	private final GpsUtilProxy gpsUtilProxy;
+	@Autowired
+	private final RewardCentralProxy rewardsCentralProxy;
 
-	public RewardsService(GpsUtilProxy gpsUtilProxy, RewardCentral rewardCentral) {
+	public RewardsService(GpsUtilProxy gpsUtilProxy, RewardCentralProxy rewardsCentralProxy) {
 
 		this.gpsUtilProxy = gpsUtilProxy;
-		this.rewardsCentral = rewardCentral;
+		this.rewardsCentralProxy = rewardsCentralProxy;
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -52,12 +55,12 @@ public class RewardsService {
 	 */
 	public CompletableFuture<?> calculateRewards(User user) {
 
+		return CompletableFuture.runAsync(() -> {
 		Queue<Attraction> attractionsList = new ConcurrentLinkedQueue<>();
 		attractionsList.addAll(gpsUtilProxy.getAttractions());
 		Queue<VisitedLocation> userVisitedLocations = new ConcurrentLinkedQueue<>();
 		userVisitedLocations.addAll(user.getVisitedLocations());
 
-		return CompletableFuture.runAsync(() -> {
 			userVisitedLocations.stream().forEach(visitedLocation -> {
 					attractionsList.stream()
 							.filter(attraction -> nearAttraction(visitedLocation, attraction))
@@ -70,7 +73,7 @@ public class RewardsService {
 								}
 							});
 			});
-		});
+		}, executor);
 	}
 
 	/** Tell if the an attraction is close.
@@ -95,7 +98,7 @@ public class RewardsService {
 
 	public int getRewardPoints(Attraction attraction, User user) {
 
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		return rewardsCentralProxy.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 
 	/** Calculate the distance in miles.

@@ -5,7 +5,7 @@ package tourGuide.config;
 public class InternalTestHelper {
 
 	// Set this default up to 100,000 for testing
-	private static int internalUserNumber = 100;
+	private static int internalUserNumber = 1;
 
 	/** Setting the amount of users to test.
 	 * @param internalUserNumber Integer containing the amount of users.

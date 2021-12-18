@@ -3,10 +3,10 @@ package tourGuide.model;
 import java.util.List;
 import java.util.concurrent.*;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.springframework.util.StopWatch;
 import tourGuide.proxy.GpsUtilProxy;
 import tourGuide.service.TourGuideService;
 
@@ -62,8 +62,8 @@ public class Tracker extends Thread {
 			CompletableFuture<?>[] trackFutureUserLocations = new
 					CompletableFuture<?>[users.size()];
 			for (int i = 0; i<users.size(); i++) {
-				VisitedLocation visitedLocation = tourGuideService.trackUserLocation(users.get(i));
-				trackFutureUserLocations[i] = CompletableFuture.supplyAsync(() -> visitedLocation);
+				int o = i;
+				trackFutureUserLocations[i] = CompletableFuture.runAsync(() -> tourGuideService.trackUserLocation(users.get(o)));
 			}
 			CompletableFuture.allOf(trackFutureUserLocations).join();
 
@@ -71,8 +71,8 @@ public class Tracker extends Thread {
 			//=== TIMER END ===
 
 			// Reset the timer and print the time result
-			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
-			stopWatch.reset();
+			logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTotalTimeMillis()) + " seconds.");
+			stopWatch.stop();
 
 			// Sleeps 5 seconds
 			try {
