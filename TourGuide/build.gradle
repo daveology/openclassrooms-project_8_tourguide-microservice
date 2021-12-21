@@ -31,7 +31,6 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-log4j2")
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.0'
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.javamoney', name: 'moneta', version: '1.4.2'
@@ -39,10 +38,6 @@ dependencies {
 
     testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.5.2'
-}
-
-configurations.implementation {
-    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 jacoco {

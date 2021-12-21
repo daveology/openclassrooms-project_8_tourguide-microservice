@@ -1,0 +1,35 @@
+services:
+  tourguide:
+    image: mn5503/tourguide
+    container_name: tourguide
+    depends_on:
+      - gpsutil
+      - rewardcentral
+      - trippricer
+    ports:
+      - 7900:7900
+    networks:
+      - tourguide-bridge
+  gps:
+    image: mn5503/gpsutil
+    container_name: gpsutil
+    ports:
+      - 7911:7911
+    networks:
+      - tourguide-bridge
+  reward:
+    image: mn5503/rewardcentral
+    container_name: rewardcentral
+    ports:
+      - 7922:7922
+    networks:
+      - tourguide-bridge
+  trippricer:
+    image: mn5503/trippricer
+    container_name: trippricer
+    ports:
+      - 7933:7933
+    networks:
+      - tourguide-bridge
+networks:
+  tourguide-bridge:
