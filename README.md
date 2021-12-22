@@ -25,7 +25,9 @@
 <details open="open">
 <summary id="summary"><b>Table of Contents</b></summary>
     <ol>
-        <li><a href="#contact">Introduction</a></li>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#technicaldiagrams">Technical Diagrams</a></li>
         <li><a href="#acknowledgements">Acknowledgements</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><a href="#project">Project Link</a></li>
@@ -35,10 +37,34 @@
 <!-- INTRODUCTION -->
 ## 📝 Introduction
 TourGuide is a Spring Boot application that has been a centerpiece in TripMasters app portfolio. It allows users to see tourist attractions and to get package deals on hotel stays and admission to various attractions.
-<p id="acknowledgements"></p>
+<p id="introduction"></p>
 
 <div align="center">
     <img src="TourGuide/src/main/resources/static/header.png" alt="header" />
+</div>
+
+<!-- REQUIREMENTS -->
+## 📝 Requirements
+<p id="requirements"></p>
+
+<div align="center">
+    <img src="https://i.postimg.cc/wvsbPvTt/prerequis.jpg" alt="header" />
+</div>
+
+<!-- REQUIREMENTS -->
+## 📝 Technical Diagrams
+<p id="technicaldiagrams"></p>
+
+### Use Cases
+
+<div align="center">
+    <img src="https://i.postimg.cc/jd5wHJ84/use-cases.jpg" alt="header" />
+</div>
+
+### Class Diagram
+
+<div align="center">
+    <img src="https://i.postimg.cc/NGb22xx0/diagramme-classes.jpg" alt="header" />
 </div>
 
 <!-- ACKNOWLEDGEMENTS -->
